@@ -10,10 +10,10 @@ Run the following commands to install your environment:
     source venv/bin/activate
     pip3 install -r requirements.txt
 
+Set .env.template variable.
+And run the following command:
+
     cp .env.template .env
-    while read file; do
-       export "$file"
-       done < .env
 
 Run the app:
 
