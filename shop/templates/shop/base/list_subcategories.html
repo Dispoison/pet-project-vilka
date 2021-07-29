@@ -1,0 +1,9 @@
+{% for subcategory in subcategories  %}
+    <li class="header__collections-item " data-navigation-item>
+        <div class="header__collections-controls">
+            <a href="{{ subcategory.get_absolute_url }}" class="header__collections-link" data-navigation-link="{{ subcategory.get_absolute_url }}" >
+                <span class="header__collections-item-name">{{ subcategory.name }}</span>
+            </a>
+        </div>
+    </li>
+{% endfor %}

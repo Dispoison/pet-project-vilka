@@ -1,0 +1,9 @@
+{% for category in categories  %}
+    <li class="collections__item" data-navigation-item>
+            <div class="collections__controls">
+              <a href="{{ category.get_absolute_url }}" class="collections__link" data-navigation-link="{{ category.get_absolute_url }}" >
+                {{ category.name }}
+              </a>
+            </div>
+          </li>
+{% endfor %}

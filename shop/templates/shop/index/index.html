@@ -1,0 +1,33 @@
+{% extends 'shop/base/base.html' %}
+{% load shop_tags %}
+
+{% block content %}
+  <div
+  class="layout widget-type_system_widget_v4_banner_list_7"
+  style="--img-ratio:1.6; --banner-border-radius:0px; --layout-wide-bg:false; --layout-mt:1vw; --layout-mb:1vw; --layout-pt:1vw; --layout-pb:1vw; --layout-content-max-width:1408px; --layout-wide-content:false; --layout-edge:false; --hide-desktop:false; --hide-mobile:false;"
+  >
+  <div class="layout__content">
+    <div class="banner-list grid-list">
+{% for category in categories|slice:7 %}
+    <a href="{{ category.get_absolute_url }}" class="banner-list__item editable-block" >
+
+      <div class="img-ratio img-ratio_cover banner-list__item-photo">
+        <div class="img-ratio__inner">
+
+            <picture>
+              <img src="{{ category.image_large.url }}" alt="">
+            </picture>
+
+        </div>
+      </div>
+  </a>
+
+{% endfor %}
+    </div>
+  </div>
+</div>
+
+
+{% show_top_discounted_products top_discounted_products %}
+
+{% endblock content %}
