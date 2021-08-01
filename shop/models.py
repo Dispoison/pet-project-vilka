@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -6,6 +8,7 @@ from django.urls import reverse
 from django.db import models
 from operator import attrgetter
 from shop.utils import get_random_int_numbers, poly_set_to_counted_products_list
+from vilka import settings
 
 from polymorphic.models import PolymorphicModel
 
@@ -101,6 +104,17 @@ class Product(PolymorphicModel):
     def clean(self):
         if self.discounted_price and self.discounted_price >= self.price:
             raise ValidationError("Цена со скидкой не может превышать или быть равной обычной цене")
+
+
+class ProductPhoto(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='photos')
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/')
+
+    def __str__(self):
+        return self.product.name
+
+    def get_absolute_url(self):
+        return os.path.join(settings.MEDIA_URL, self.photo.url)
 
 
 class Smartphone(Product):

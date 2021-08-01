@@ -1,3 +1,4 @@
+import django.contrib.admin
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -27,7 +28,7 @@ def show_subcategory(request, slug):
 
 
 def show_product(request, slug):
-    product = Product.objects.get(slug=slug)
+    product = Product.objects.get_queryset().prefetch_related('photos').get(slug=slug)
     categories = Category.objects.prefetch_related('subcategory_set')
     context = {
         'title': 'Интернет-магазин Vilka',

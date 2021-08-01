@@ -58,15 +58,17 @@
                                     <!-- product -->
                                     {% for product in top_discounted_products %}
                                     <div class="product">
-                                        <div class="product-img">
-                                            <img src="{{ product.photo.url }}" alt="{{ product.name }}">
-                                            <div class="product-label">
-                                                <span class="sale">-{{ product.discount }}%</span>
+                                        <a href="{{ product.get_absolute_url }}">
+                                            <div class="product-img">
+                                                    <img src="{{ product.photo.url }}" alt="{{ product.name }}">
+                                                    <div class="product-label">
+                                                        <span class="sale">-{{ product.discount }}%</span>
+                                                    </div>
                                             </div>
-                                        </div>
+                                        </a>
                                         <div class="product-body">
                                             <p class="product-category">{{ product.subcategory.name }}</p>
-                                            <h3 class="product-name"><a href="#">{{ product.name }}</a></h3>
+                                            <h3 class="product-name"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h3>
                                             <h4 class="product-price">₴{{ product.discounted_price }} <del class="product-old-price">₴{{ product.price }}</del></h4>
                                             <div class="product-rating">
                                                 <i class="fa fa-star"></i>

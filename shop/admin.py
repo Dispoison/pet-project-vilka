@@ -1,10 +1,10 @@
 from django.contrib import admin
-from django.db.models import F
+from django.http import HttpResponse
 from django.utils.safestring import mark_safe
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
-from django import forms
-from .models import *
-from .utils import ProductMixin
+from shop.models import *
+from shop.utils import ProductMixin
+from shop.forms import ProductModelForm
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -41,14 +41,17 @@ class ProductAdmin(PolymorphicParentModelAdmin):
 
 class SmartphoneAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = Smartphone
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.subcategory_slug = 'smartfony'
 
 
+
 class TabletAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = Tablet
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,6 +60,7 @@ class TabletAdmin(ProductMixin, PolymorphicChildModelAdmin):
 
 class SmartphoneAccessoryAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = SmartphoneAccessory
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -65,6 +69,7 @@ class SmartphoneAccessoryAdmin(ProductMixin, PolymorphicChildModelAdmin):
 
 class TabletAccessoryAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = TabletAccessory
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -73,6 +78,7 @@ class TabletAccessoryAdmin(ProductMixin, PolymorphicChildModelAdmin):
 
 class NotebookAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = Notebook
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -81,6 +87,7 @@ class NotebookAdmin(ProductMixin, PolymorphicChildModelAdmin):
 
 class MonitorAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = Monitor
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -89,6 +96,7 @@ class MonitorAdmin(ProductMixin, PolymorphicChildModelAdmin):
 
 class MonoblockAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = Monoblock
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -97,6 +105,7 @@ class MonoblockAdmin(ProductMixin, PolymorphicChildModelAdmin):
 
 class SystemUnitAdmin(ProductMixin, PolymorphicChildModelAdmin):
     base_model = SystemUnit
+    base_form = ProductModelForm
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
