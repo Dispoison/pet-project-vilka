@@ -1,6 +1,6 @@
 # Pet project Vilka
 Pet project: online store, created by me to demonstrate, first of all, to myself, my knowledge and abilities in the Django framework.
-The site template was taken from [here](https://www.insales.ru/collection/themes/product/shablon-internet-magazina-fine).
+The site template was taken from [here](https://freehtmlthemes.ru/templates/ecommerce/template-224).
 
 ## Install
 
