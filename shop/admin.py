@@ -1,8 +1,10 @@
 from django.contrib import admin
-from django import forms
+from django.db.models import F
 from django.utils.safestring import mark_safe
-
+from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
+from django import forms
 from .models import *
+from .utils import ProductMixin
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -21,14 +23,14 @@ class SubcategoryAdmin(admin.ModelAdmin):
     #ordering = ('level', 'id',)
 
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(PolymorphicParentModelAdmin):
+    base_model = Product
+    child_models = (Smartphone, Tablet, SmartphoneAccessory, TabletAccessory, Notebook, Monitor, Monoblock, SystemUnit)
     list_display = ('name', 'discounted_price', 'price', 'get_html_photo')
-    search_fields = ('name', 'description')
-    prepopulated_fields = {'slug': ('name',)}
 
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = None
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = None
 
     def get_html_photo(self, object):
         if object.photo:
@@ -36,63 +38,75 @@ class ProductAdmin(admin.ModelAdmin):
 
     get_html_photo.short_description = 'Изображение'
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == 'category':
-            return forms.ModelChoiceField(Subcategory.objects.filter(slug=self.category_slug), empty_label=None)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+class SmartphoneAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = Smartphone
 
-class SmartphoneAdmin(ProductAdmin):
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'smartfony'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'smartfony'
 
 
-class TabletAdmin(ProductAdmin):
+class TabletAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = Tablet
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'planshety'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'planshety'
 
 
-class SmartphoneAccessoryAdmin(ProductAdmin):
+class SmartphoneAccessoryAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = SmartphoneAccessory
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'aksessuary-dlya-smartfonov'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'aksessuary-dlya-smartfonov'
 
 
-class TabletAccessoryAdmin(ProductAdmin):
+class TabletAccessoryAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = TabletAccessory
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'aksessuary-dlya-planshetov'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'aksessuary-dlya-planshetov'
 
 
-class NotebookAdmin(ProductAdmin):
+class NotebookAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = Notebook
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'noutbuki'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'noutbuki'
 
 
-class MonitorAdmin(ProductAdmin):
+class MonitorAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = Monitor
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'monitory'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'monitory'
 
 
-class MonoblockAdmin(ProductAdmin):
+class MonoblockAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = Monoblock
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'monobloki'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'monobloki'
 
 
-class SystemUnitAdmin(ProductAdmin):
+class SystemUnitAdmin(ProductMixin, PolymorphicChildModelAdmin):
+    base_model = SystemUnit
+
     def __init__(self, *args, **kwargs):
-        super(ProductAdmin, self).__init__(*args, **kwargs)
-        self.category_slug = 'sistemnye-bloki'
+        super().__init__(*args, **kwargs)
+        self.subcategory_slug = 'sistemnye-bloki'
 
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Subcategory, SubcategoryAdmin)
 
+admin.site.register(Product, ProductAdmin)
 
 admin.site.register(Smartphone, SmartphoneAdmin)
 admin.site.register(Tablet, TabletAdmin)

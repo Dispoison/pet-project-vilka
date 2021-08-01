@@ -4,6 +4,10 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.db import models
+from operator import attrgetter
+from shop.utils import get_random_int_numbers, poly_set_to_counted_products_list
+
+from polymorphic.models import PolymorphicModel
 
 User = get_user_model()
 
@@ -45,13 +49,9 @@ class Subcategory(models.Model):
 class TopDiscountedProductsManager:
     @staticmethod
     def get_discounted_products_from_subclasses():
-        subclasses = Product.__subclasses__()
-        products = []
-        for subclass in subclasses:
-            discounted_prods = list(subclass.objects.filter(discounted_price__isnull=False))
-            [setattr(prod, 'discount', int(100*(1 - prod.discounted_price / prod.price))) for prod in discounted_prods]
-            products.append(*discounted_prods)
-        products.sort(key=lambda p: p.discount, reverse=True)
+        products = Product.objects.filter(discounted_price__isnull=False).select_related('subcategory')
+        [setattr(prod, 'discount', int(100 - 100 * (prod.discounted_price / prod.price))) for prod in products]
+        products = sorted(products, key=attrgetter('discount'), reverse=True)
         return products
 
 
@@ -59,18 +59,38 @@ class TopDiscountedProducts:
     objects = TopDiscountedProductsManager()
 
 
-class Product(models.Model):
-    class Meta:
-        abstract = True
+class ThreeMainSubcategoriesManager:
+    @staticmethod
+    def get_three_main_subcategories():
+        return Subcategory.objects.filter(name__in=['Смартфоны', 'Планшеты', 'Ноутбуки']).order_by('id')
 
+
+class ThreeMainSubcategory:
+    objects = ThreeMainSubcategoriesManager()
+
+
+class ThreeRandomSubcategoryProductSetManager:
+    @staticmethod
+    def get_three_random_subcategory_products():
+        subcategories_length = len(Product.objects.values('subcategory_id').distinct())
+        three_random_subcategory_products = Product.objects\
+            .filter(subcategory_id__in=get_random_int_numbers(3, 1, subcategories_length)).select_related('subcategory')
+        return poly_set_to_counted_products_list(three_random_subcategory_products)
+
+
+class ThreeRandomSubcategoryProductSet:
+    objects = ThreeRandomSubcategoryProductSetManager()
+
+
+class Product(PolymorphicModel):
     name = models.CharField(max_length=255, verbose_name='Название')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена')
     discounted_price = models.DecimalField(max_digits=9, decimal_places=2,
                                            null=True, blank=True, verbose_name='Цена со скидкой')
     photo = models.ImageField(upload_to='photos/%Y/%m/%d/', verbose_name='Изображение')
-    description = models.TextField(null=True, verbose_name='Описание')
-    category = models.ForeignKey('Subcategory', on_delete=models.PROTECT, verbose_name='Категория', null=True)
+    description = models.TextField(verbose_name='Описание')
+    subcategory = models.ForeignKey('Subcategory', on_delete=models.PROTECT, verbose_name='Подкатегория')
 
     def __str__(self):
         return f'{self.name}'

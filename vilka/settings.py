@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'mptt',
     'shop.apps.ShopConfig',
     'admin_reorder',
+    'polymorphic',
 ]
 
 MIDDLEWARE = [
