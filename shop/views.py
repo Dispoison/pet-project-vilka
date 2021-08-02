@@ -28,11 +28,15 @@ def show_subcategory(request, slug):
 
 
 def show_product(request, slug):
+    from collections import namedtuple
     product = Product.objects.get_queryset().prefetch_related('photos').get(slug=slug)
     categories = Category.objects.prefetch_related('subcategory_set')
+    Field = namedtuple('Field', 'name verbose_name')
+    details = [Field(field.name, field.verbose_name) for field in product._meta.fields][10:]
     context = {
         'title': 'Интернет-магазин Vilka',
         'categories': categories,
         'product': product,
+        'details': details
     }
     return render(request, 'shop/product.html', context=context)
