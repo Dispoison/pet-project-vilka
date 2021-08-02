@@ -14,7 +14,7 @@ def products_slice(subcategory, i):
     return subcategory[i*3:i*3+3]
 
 @register.simple_tag(name='getattr')
-def get_caterogies(obj, field):
+def get_attribute(obj, field):
     from collections import namedtuple
     Field = namedtuple('Field', 'verbose_name value')
     value = getattr(obj, field.name)
