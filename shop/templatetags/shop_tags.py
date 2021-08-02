@@ -11,7 +11,8 @@ def division_by_3_ceil_range(num):
 
 @register.filter
 def products_slice(subcategory, i):
-    return subcategory[i*3:i*3+3]
+    return subcategory[i * 3:i * 3 + 3]
+
 
 @register.simple_tag(name='getattr')
 def get_attribute(obj, field):
@@ -19,3 +20,8 @@ def get_attribute(obj, field):
     Field = namedtuple('Field', 'verbose_name value')
     value = getattr(obj, field.name)
     return Field(field.verbose_name, value)
+
+
+@register.inclusion_tag('shop/product/add_to_cart.html')
+def show_add_to_cart(form):
+    return {'form': form}

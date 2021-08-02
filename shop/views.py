@@ -2,7 +2,8 @@ import django.contrib.admin
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from .models import *
+from shop.models import *
+from shop.forms import AddProductToCartForm
 
 
 def index(request):
@@ -28,15 +29,26 @@ def show_subcategory(request, slug):
 
 
 def show_product(request, slug):
+    if request.method == 'POST':
+        form = AddProductToCartForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+    else:
+        form = AddProductToCartForm
     from collections import namedtuple
     product = Product.objects.get_queryset().prefetch_related('photos').get(slug=slug)
     categories = Category.objects.prefetch_related('subcategory_set')
     Field = namedtuple('Field', 'name verbose_name')
     details = [Field(field.name, field.verbose_name) for field in product._meta.fields][10:]
+    short_description = product.description.split('.')[0]
+
+
     context = {
         'title': 'Интернет-магазин Vilka',
         'categories': categories,
         'product': product,
-        'details': details
+        'details': details,
+        'short_description': short_description,
+        'form': form,
     }
-    return render(request, 'shop/product.html', context=context)
+    return render(request, 'shop/product/product.html', context=context)

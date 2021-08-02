@@ -104,6 +104,7 @@
 
 	// Input number
 	$('.input-number').each(function() {
+		var input_number = document.querySelectorAll('input.number');
 		var $this = $(this),
 		$input = $this.find('input[type="number"]'),
 		up = $this.find('.qty-up'),
@@ -114,6 +115,7 @@
 			value = value < 1 ? 1 : value;
 			$input.val(value);
 			$input.change();
+			input_number.val(value);
 			updatePriceSlider($this , value)
 		})
 
@@ -121,6 +123,7 @@
 			var value = parseInt($input.val()) + 1;
 			$input.val(value);
 			$input.change();
+			input_number.val(value);
 			updatePriceSlider($this , value)
 		})
 	});

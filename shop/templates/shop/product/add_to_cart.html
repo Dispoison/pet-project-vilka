@@ -1,0 +1,15 @@
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-error">{{ form.non_field_errors }}</div>
+
+    <div class="qty-label">
+        Количество
+        <div class="input-number">
+            {{ form.quantity }}
+            <span class="qty-up">+</span>
+            <span class="qty-down">-</span>
+        </div>
+    </div>
+    <button type="submit" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>в корзину</button>
+</form>

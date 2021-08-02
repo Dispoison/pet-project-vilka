@@ -113,9 +113,6 @@ class ProductPhoto(models.Model):
     def __str__(self):
         return self.product.name
 
-    def get_absolute_url(self):
-        return os.path.join(settings.MEDIA_URL, self.photo.url)
-
 
 class Smartphone(Product):
     class Meta:
