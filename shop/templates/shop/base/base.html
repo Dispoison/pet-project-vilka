@@ -1,4 +1,5 @@
 {% load static %}
+{% load shop_tags %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -27,7 +28,7 @@
 
  		<!-- Custom stlylesheet -->
  		<link type="text/css" rel="stylesheet" href="{% static 'shop/css/style.css' %}"/>
-
+        <link rel="icon" href="{% static 'shop/images/favicon.ico' %}">
  		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
  		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
  		<!--[if lt IE 9]>
@@ -38,7 +39,7 @@
     </head>
 	<body>
 		<!-- HEADER -->
-		<header>
+		<header id="header-tag">
 			<!-- TOP HEADER -->
 			<div id="top-header">
 				<div class="container">
@@ -62,7 +63,7 @@
 					<!-- row -->
 					<div class="row">
 						<!-- LOGO -->
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<div class="header-logo">
 								<a href="{% url 'home' %}" class="logo">
 									<img src="{% static 'shop/images/logo.png' %}" alt="VILKA">
@@ -70,13 +71,19 @@
 							</div>
 						</div>
 						<!-- /LOGO -->
-
+                        <div class="col-md-2">
+							<div class="categories">
+                                <a href="#popup" class="popup-link">
+								    <button class="categories-btn">Категории</button>
+                                </a>
+							</div>
+						</div>
 						<!-- SEARCH BAR -->
-						<div class="col-md-6">
+						<div class="col-md-5">
 							<div class="header-search">
 								<form>
-									<input class="input" placeholder="Search here">
-									<button class="search-btn">Search</button>
+									<input class="input" placeholder="Ну купи...">
+									<button class="search-btn">Поиск</button>
 								</form>
 							</div>
 						</div>
@@ -153,34 +160,14 @@
 					<!-- row -->
 				</div>
 				<!-- container -->
+
 			</div>
 			<!-- /MAIN HEADER -->
 		</header>
 		<!-- /HEADER -->
 
-		<!-- NAVIGATION -->
-		<nav id="navigation">
-			<!-- container -->
-			<div class="container">
-				<!-- responsive-nav -->
-				<div id="responsive-nav">
-					<!-- NAV -->
-					<ul class="main-nav nav navbar-nav">
-						<li class="active"><a href="#">Home</a></li>
-						<li><a href="#">Hot Deals</a></li>
-						<li><a href="#">Categories</a></li>
-						<li><a href="#">Laptops</a></li>
-						<li><a href="#">Smartphones</a></li>
-						<li><a href="#">Cameras</a></li>
-						<li><a href="#">Accessories</a></li>
-					</ul>
-					<!-- /NAV -->
-				</div>
-				<!-- /responsive-nav -->
-			</div>
-			<!-- /container -->
-		</nav>
-		<!-- /NAVIGATION -->
+{% block breadcrumb %}
+{% endblock breadcrumb %}
 
 {% block content %}
 {% endblock content %}
@@ -224,7 +211,7 @@
 							<div class="footer">
 								<h3 class="footer-title">Information</h3>
 								<ul class="footer-links">
-									<li><a href="#">About Us</a></li>
+									<li><a href="{% url 'about_us' %}">О нас</a></li>
 									<li><a href="#">Contact Us</a></li>
 									<li><a href="#">Privacy Policy</a></li>
 									<li><a href="#">Orders and Returns</a></li>
@@ -241,7 +228,7 @@
 									<li><a href="#">View Cart</a></li>
 									<li><a href="#">Wishlist</a></li>
 									<li><a href="#">Track My Order</a></li>
-									<li><a href="#">Help</a></li>
+									<li><a href="{% url 'help' %}">Помощь</a></li>
 								</ul>
 							</div>
 						</div>
@@ -283,6 +270,39 @@
 		</footer>
 		<!-- /FOOTER -->
 
+
+        <div id="popup" class="popup">
+            <div class="popup__body">
+                <div class="popup__content">
+                    <div class="popup__grid">
+                        {% for category in categories %}
+                        <div class="popup__grid__item">
+                            <a href="{{ category.get_absolute_url }}" class="popup__grid-link-flex">
+                                <img style="width: 40%" src="{{ category.image.url }}">
+                                <span class="popup__grid_category_name">{{ category.name }}</span>
+                            </a>
+
+                            <ul>
+                                {% for subcategory in category.subcategory_set.all %}
+                                <li>
+                                    <div>
+                                        <a href="{{ subcategory.get_absolute_url }}">
+                                            <span>{{ subcategory.name }}</span>
+                                        </a>
+                                    </div>
+                                </li>
+                                {% endfor %}
+
+                            </ul>
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
 		<!-- jQuery Plugins -->
 		<script src="{% static 'shop/js/jquery.min.js' %}"></script>
 		<script src="{% static 'shop/js/bootstrap.min.js' %}"></script>
@@ -290,6 +310,7 @@
 		<script src="{% static 'shop/js/nouislider.min.js' %}"></script>
 		<script src="{% static 'shop/js/jquery.zoom.min.js' %}"></script>
 		<script src="{% static 'shop/js/main.js' %}"></script>
+        <script src="{% static 'shop/js/popup.js' %}"></script>
 
 	</body>
 </html>

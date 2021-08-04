@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -7,8 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.db import models
 from operator import attrgetter
-from shop.utils import get_random_int_numbers, poly_set_to_counted_products_list
-from vilka import settings
+from shop.utils import get_random_int_numbers, poly_set_to_counted_products_list, set_discount
 
 from polymorphic.models import PolymorphicModel
 
@@ -53,9 +50,8 @@ class TopDiscountedProductsManager:
     @staticmethod
     def get_discounted_products_from_subclasses():
         products = Product.objects.filter(discounted_price__isnull=False).select_related('subcategory')
-        [setattr(prod, 'discount', int(100 - 100 * (prod.discounted_price / prod.price))) for prod in products]
-        products = sorted(products, key=attrgetter('discount'), reverse=True)
-        return products
+        set_discount(products)
+        return sorted(products, key=attrgetter('discount'), reverse=True)
 
 
 class TopDiscountedProducts:

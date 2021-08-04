@@ -25,3 +25,8 @@ def get_attribute(obj, field):
 @register.inclusion_tag('shop/product/add_to_cart.html')
 def show_add_to_cart(form):
     return {'form': form}
+
+
+@register.inclusion_tag('shop/base/breadcrumb.html')
+def show_breadcrumb():
+    return

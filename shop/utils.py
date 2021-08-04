@@ -6,7 +6,8 @@ class ProductMixin:
     prepopulated_fields = {'slug': ('name',)}
     base_fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'price', 'discounted_price', 'photo', 'more_photos', 'description', 'subcategory')
+            'fields': (
+            'name', 'slug', 'price', 'discounted_price', 'photo', 'more_photos', 'description', 'subcategory')
         }),
     )
 
@@ -24,7 +25,6 @@ class ProductMixin:
             for photo in photos:
                 from shop.models import ProductPhoto
                 ProductPhoto.objects.create(product=obj, photo=photo)
-
 
 
 def get_random_int_numbers(count, start, stop):
@@ -48,3 +48,8 @@ def poly_set_to_counted_products_list(poly_set):
                                           'count': 1})
             current_prods_cls = product.__class__
     return counted_products_list
+
+
+def set_discount(products):
+    [setattr(prod, 'discount', int(100 - 100 * (prod.discounted_price / prod.price)))
+     for prod in products if prod.discounted_price]

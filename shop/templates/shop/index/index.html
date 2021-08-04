@@ -20,7 +20,7 @@
                         </div>
                         <div class="shop-body">
                             <h3>{{ subcategory.name }}</h3>
-                            <a href="#" class="cta-btn">Купить сейчас <i class="fa fa-arrow-circle-right"></i></a>
+                            <a href="{{ subcategory.get_absolute_url }}" class="cta-btn">Купить сейчас <i class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                 </div>
@@ -133,7 +133,11 @@
                                 <div class="product-body">
                                     <h3 class="product-name">{{ product.name }}</h3>
                                     {% if product.discounted_price %}
-                                    <h4 class="product-price">₴{{ product.discounted_price }} <del class="product-old-price">₴{{ product.price }}</del></h4>
+                                    <h4 class="product-price">₴{{ product.discounted_price }} <del class="product-old-price">₴{{ product.price }}</del>
+                                    <div class="product-label-right">
+                                        <span class="sale">-{{ product.discount }}%</span>
+                                    </div>
+                                    </h4>
                                     {% else %}
                                     <h4 class="product-price">₴{{ product.price }}</h4>
                                     {% endif %}
