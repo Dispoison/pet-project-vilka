@@ -82,6 +82,7 @@ class ThreeRandomSubcategoryProductSet:
 
 
 class Product(PolymorphicModel):
+
     name = models.CharField(max_length=255, verbose_name='Название')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена')

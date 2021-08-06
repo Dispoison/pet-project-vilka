@@ -5,8 +5,14 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="breadcrumb-tree">
-                        <li><a href="#">Home</a></li>
-                        <li class="active">Blank</li>
+                        <li><a href="{% url 'home' %}">Главная</a></li>
+                        {% for bc in breadcrumb %}
+                            {% if bc.is_active %}
+                            <li class="active">{{ bc.name }}</li>
+                            {% else %}
+                            <li><a href="{{ bc.url }}">{{ bc.name }}</a></li>
+                            {% endif %}
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

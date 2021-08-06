@@ -45,6 +45,7 @@ Table OF Contents
 11 > FOOTER
 11 > SLICK STYLE
 12 > RESPONSIVE
+13 > CUSTOM
 ------------------------------------*/
 
 /*=========================================================
@@ -54,6 +55,10 @@ Table OF Contents
 /*----------------------------*\
 	Typography
 \*----------------------------*/
+
+html, body {
+  height: 100%;
+}
 
 body {
   font-family: 'Montserrat', sans-serif;
@@ -2201,6 +2206,20 @@ textarea.input {
   background-color: #FFF;
   border-color: #D10024;
   color: #D10024;
+}
+
+/*=========================================================
+	13 -> CUSTOM
+===========================================================*/
+
+.wrapper {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  flex: 1 1 auto;
 }
 
 .also {

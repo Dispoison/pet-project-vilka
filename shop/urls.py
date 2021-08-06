@@ -10,4 +10,5 @@ urlpatterns = [
     path('product/<slug:slug>/', show_product, name='product'),
     path('help', show_help, name='help'),
     path('about-us', show_about_us, name='about_us'),
+    path('404', handler404, name='404'),
 ]

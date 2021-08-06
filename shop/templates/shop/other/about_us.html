@@ -1,5 +1,10 @@
 {% extends 'shop/base/base.html' %}
 {% load static %}
+{% load shop_tags %}
+
+{% block breadcrumb %}
+    {% show_breadcrumb breadcrumb %}
+{% endblock breadcrumb %}
 
 {% block content %}
     <img src="{% static 'shop/images/about_us.jpg' %}" alt="Кто мы то? Я тут один сижу"

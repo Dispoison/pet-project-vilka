@@ -19,7 +19,7 @@
                         {% endif %}
                         </div>
                         <div class="shop-body">
-                            <h3>{{ subcategory.name }}</h3>
+                            <a href="{{ subcategory.get_absolute_url }}"><h3>{{ subcategory.name }}</h3></a>
                             <a href="{{ subcategory.get_absolute_url }}" class="cta-btn">Купить сейчас <i class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>

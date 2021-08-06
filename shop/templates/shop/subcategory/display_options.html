@@ -1,0 +1,28 @@
+{% load shop_tags %}
+<form method="post">
+    {% csrf_token %}
+
+    <div class="form-error">{{ form.non_field_errors }}</div>
+
+    <div class="store-sort">
+        <label>
+            Сортировать:
+            <select class="input-select" onchange="this.form.submit()" name="sort">
+                {% get_bound_field form 'sort' as bound_field_sort %}
+                {% for value, text in form.fields.sort.choices %}
+                <option value="{{ value }}"{% if bound_field_sort == value %} selected{% endif %}>{{ text }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>
+            Показать:
+            <select class="input-select" onchange="this.form.submit()" name="display_num">
+                {% get_bound_field form 'display_num' as bound_field_display_num %}
+                {% for value, text in form.fields.display_num.choices %}
+                <option value="{{ value }}"{% if bound_field_display_num == value %} selected{% endif %}>{{ text }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    </div>
+</form>

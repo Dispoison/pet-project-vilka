@@ -27,6 +27,16 @@ def show_add_to_cart(form):
     return {'form': form}
 
 
+@register.inclusion_tag('shop/subcategory/display_options.html')
+def display_options(form):
+    return {'form': form}
+
+
 @register.inclusion_tag('shop/base/breadcrumb.html')
-def show_breadcrumb():
-    return
+def show_breadcrumb(breadcrumb):
+    return {'breadcrumb': breadcrumb}
+
+
+@register.simple_tag()
+def get_bound_field(form, field):
+    return form.fields[field].get_bound_field(form, field).data

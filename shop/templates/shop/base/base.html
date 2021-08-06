@@ -38,270 +38,271 @@
 
     </head>
 	<body>
-		<!-- HEADER -->
-		<header id="header-tag">
-			<!-- TOP HEADER -->
-			<div id="top-header">
-				<div class="container">
-					<ul class="header-links pull-left">
-						<li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
-						<li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
-						<li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
-					</ul>
-					<ul class="header-links pull-right">
-						<li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-						<li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
-					</ul>
-				</div>
-			</div>
-			<!-- /TOP HEADER -->
+        <div class="wrapper">
+            <!-- HEADER -->
+            <header id="header-tag">
+                <!-- TOP HEADER -->
+                <div id="top-header">
+                    <div class="container">
+                        <ul class="header-links pull-left">
+                            <li><a href="#"><i class="fa fa-phone"></i> +021-95-51-84</a></li>
+                            <li><a href="#"><i class="fa fa-envelope-o"></i> email@email.com</a></li>
+                            <li><a href="#"><i class="fa fa-map-marker"></i> 1734 Stonecoal Road</a></li>
+                        </ul>
+                        <ul class="header-links pull-right">
+                            <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+                            <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /TOP HEADER -->
 
-			<!-- MAIN HEADER -->
-			<div id="header">
-				<!-- container -->
-				<div class="container">
-					<!-- row -->
-					<div class="row">
-						<!-- LOGO -->
-						<div class="col-md-2">
-							<div class="header-logo">
-								<a href="{% url 'home' %}" class="logo">
-									<img src="{% static 'shop/images/logo.png' %}" alt="VILKA">
-								</a>
-							</div>
-						</div>
-						<!-- /LOGO -->
-                        <div class="col-md-2">
-							<div class="categories">
-                                <a href="#popup" class="popup-link">
-								    <button class="categories-btn">Категории</button>
-                                </a>
-							</div>
-						</div>
-						<!-- SEARCH BAR -->
-						<div class="col-md-5">
-							<div class="header-search">
-								<form>
-									<input class="input" placeholder="Ну купи...">
-									<button class="search-btn">Поиск</button>
-								</form>
-							</div>
-						</div>
-						<!-- /SEARCH BAR -->
+                <!-- MAIN HEADER -->
+                <div id="header">
+                    <!-- container -->
+                    <div class="container">
+                        <!-- row -->
+                        <div class="row">
+                            <!-- LOGO -->
+                            <div class="col-md-2">
+                                <div class="header-logo">
+                                    <a href="{% url 'home' %}" class="logo">
+                                        <img src="{% static 'shop/images/logo.png' %}" alt="VILKA">
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- /LOGO -->
+                            <div class="col-md-2">
+                                <div class="categories">
+                                    <a href="#popup" class="popup-link">
+                                        <button class="categories-btn">Категории</button>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- SEARCH BAR -->
+                            <div class="col-md-5">
+                                <div class="header-search">
+                                    <form>
+                                        <input class="input" placeholder="Ну купи...">
+                                        <button class="search-btn">Поиск</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /SEARCH BAR -->
 
-						<!-- ACCOUNT -->
-						<div class="col-md-3 clearfix">
-							<div class="header-ctn">
-								<!-- Wishlist -->
-								<div>
-									<a href="#">
-										<i class="fa fa-heart-o"></i>
-										<span>Желаемое</span>
-										<div class="qty">2</div>
-									</a>
-								</div>
-								<!-- /Wishlist -->
+                            <!-- ACCOUNT -->
+                            <div class="col-md-3 clearfix">
+                                <div class="header-ctn">
+                                    <!-- Wishlist -->
+                                    <div>
+                                        <a href="#">
+                                            <i class="fa fa-heart-o"></i>
+                                            <span>Желаемое</span>
+                                            <div class="qty">2</div>
+                                        </a>
+                                    </div>
+                                    <!-- /Wishlist -->
 
-								<!-- Cart -->
-								<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
-										<span>Корзина</span>
-										<div class="qty">3</div>
-									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
+                                    <!-- Cart -->
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                            <i class="fa fa-shopping-cart"></i>
+                                            <span>Корзина</span>
+                                            <div class="qty">3</div>
+                                        </a>
+                                        <div class="cart-dropdown">
+                                            <div class="cart-list">
+                                                <div class="product-widget">
+                                                    <div class="product-img">
+                                                        <img src="" alt="">
+                                                    </div>
+                                                    <div class="product-body">
+                                                        <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                        <h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+                                                    </div>
+                                                    <button class="delete"><i class="fa fa-close"></i></button>
+                                                </div>
 
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="" alt="">
-												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">product name goes here</a></h3>
-													<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
-												</div>
-												<button class="delete"><i class="fa fa-close"></i></button>
-											</div>
-										</div>
-										<div class="cart-summary">
-											<small>3 Item(s) selected</small>
-											<h5>SUBTOTAL: $2940.00</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="#">View Cart</a>
-											<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
-										</div>
-									</div>
-								</div>
-								<!-- /Cart -->
+                                                <div class="product-widget">
+                                                    <div class="product-img">
+                                                        <img src="" alt="">
+                                                    </div>
+                                                    <div class="product-body">
+                                                        <h3 class="product-name"><a href="#">product name goes here</a></h3>
+                                                        <h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+                                                    </div>
+                                                    <button class="delete"><i class="fa fa-close"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="cart-summary">
+                                                <small>3 Item(s) selected</small>
+                                                <h5>SUBTOTAL: $2940.00</h5>
+                                            </div>
+                                            <div class="cart-btns">
+                                                <a href="#">View Cart</a>
+                                                <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /Cart -->
 
-								<!-- Menu Toogle -->
-								<div class="menu-toggle">
-									<a href="#">
-										<i class="fa fa-bars"></i>
-										<span>Menu</span>
-									</a>
-								</div>
-								<!-- /Menu Toogle -->
-							</div>
-						</div>
-						<!-- /ACCOUNT -->
-					</div>
-					<!-- row -->
-				</div>
-				<!-- container -->
+                                    <!-- Menu Toogle -->
+                                    <div class="menu-toggle">
+                                        <a href="#">
+                                            <i class="fa fa-bars"></i>
+                                            <span>Menu</span>
+                                        </a>
+                                    </div>
+                                    <!-- /Menu Toogle -->
+                                </div>
+                            </div>
+                            <!-- /ACCOUNT -->
+                        </div>
+                        <!-- row -->
+                    </div>
+                    <!-- container -->
 
-			</div>
-			<!-- /MAIN HEADER -->
-		</header>
-		<!-- /HEADER -->
+                </div>
+                <!-- /MAIN HEADER -->
+            </header>
+            <!-- /HEADER -->
 
 {% block breadcrumb %}
 {% endblock breadcrumb %}
 
+        <main class="main">
 {% block content %}
 {% endblock content %}
+        </main>
 
-		<!-- FOOTER -->
-		<footer id="footer">
-			<!-- top footer -->
-			<div class="section">
-				<!-- container -->
-				<div class="container">
-					<!-- row -->
-					<div class="row">
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">About Us</h3>
-								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
-								<ul class="footer-links">
-									<li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
-									<li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
-									<li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
-								</ul>
-							</div>
-						</div>
+            <!-- FOOTER -->
+            <footer id="footer">
+                <!-- top footer -->
+                <div class="section">
+                    <!-- container -->
+                    <div class="container">
+                        <!-- row -->
+                        <div class="row">
+                            <div class="col-md-3 col-xs-6">
+                                <div class="footer">
+                                    <h3 class="footer-title">About Us</h3>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
+                                    <ul class="footer-links">
+                                        <li><a href="#"><i class="fa fa-map-marker"></i>1734 Stonecoal Road</a></li>
+                                        <li><a href="#"><i class="fa fa-phone"></i>+021-95-51-84</a></li>
+                                        <li><a href="#"><i class="fa fa-envelope-o"></i>email@email.com</a></li>
+                                    </ul>
+                                </div>
+                            </div>
 
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Categories</h3>
-								<ul class="footer-links">
-									<li><a href="#">Hot deals</a></li>
-									<li><a href="#">Laptops</a></li>
-									<li><a href="#">Smartphones</a></li>
-									<li><a href="#">Cameras</a></li>
-									<li><a href="#">Accessories</a></li>
-								</ul>
-							</div>
-						</div>
+                            <div class="col-md-3 col-xs-6">
+                                <div class="footer">
+                                    <h3 class="footer-title">Категории</h3>
+                                    <ul class="footer-links">
+                                        {% for category in categories %}
+                                        <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
 
-						<div class="clearfix visible-xs"></div>
+                            <div class="clearfix visible-xs"></div>
 
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Information</h3>
-								<ul class="footer-links">
-									<li><a href="{% url 'about_us' %}">О нас</a></li>
-									<li><a href="#">Contact Us</a></li>
-									<li><a href="#">Privacy Policy</a></li>
-									<li><a href="#">Orders and Returns</a></li>
-									<li><a href="#">Terms & Conditions</a></li>
-								</ul>
-							</div>
-						</div>
+                            <div class="col-md-3 col-xs-6">
+                                <div class="footer">
+                                    <h3 class="footer-title">Information</h3>
+                                    <ul class="footer-links">
+                                        <li><a href="{% url 'about_us' %}">О нас</a></li>
+                                        <li><a href="#">Contact Us</a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                        <li><a href="#">Orders and Returns</a></li>
+                                        <li><a href="#">Terms & Conditions</a></li>
+                                    </ul>
+                                </div>
+                            </div>
 
-						<div class="col-md-3 col-xs-6">
-							<div class="footer">
-								<h3 class="footer-title">Service</h3>
-								<ul class="footer-links">
-									<li><a href="#">My Account</a></li>
-									<li><a href="#">View Cart</a></li>
-									<li><a href="#">Wishlist</a></li>
-									<li><a href="#">Track My Order</a></li>
-									<li><a href="{% url 'help' %}">Помощь</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<!-- /row -->
-				</div>
-				<!-- /container -->
-			</div>
-			<!-- /top footer -->
-
-			<!-- bottom footer -->
-			<div id="bottom-footer" class="section">
-				<div class="container">
-					<!-- row -->
-					<div class="row">
-						<div class="col-md-12 text-center">
-							<ul class="footer-payments">
-								<li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
-								<li><a href="#"><i class="fa fa-credit-card"></i></a></li>
-								<li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
-								<li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
-								<li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
-								<li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
-							</ul>
-							<span class="copyright">
-								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-							</span>
-
-
-						</div>
-					</div>
-						<!-- /row -->
-				</div>
-				<!-- /container -->
-			</div>
-			<!-- /bottom footer -->
-		</footer>
-		<!-- /FOOTER -->
-
-
-        <div id="popup" class="popup">
-            <div class="popup__body">
-                <div class="popup__content">
-                    <div class="popup__grid">
-                        {% for category in categories %}
-                        <div class="popup__grid__item">
-                            <a href="{{ category.get_absolute_url }}" class="popup__grid-link-flex">
-                                <img style="width: 40%" src="{{ category.image.url }}">
-                                <span class="popup__grid_category_name">{{ category.name }}</span>
-                            </a>
-
-                            <ul>
-                                {% for subcategory in category.subcategory_set.all %}
-                                <li>
-                                    <div>
-                                        <a href="{{ subcategory.get_absolute_url }}">
-                                            <span>{{ subcategory.name }}</span>
-                                        </a>
-                                    </div>
-                                </li>
-                                {% endfor %}
-
-                            </ul>
-
+                            <div class="col-md-3 col-xs-6">
+                                <div class="footer">
+                                    <h3 class="footer-title">Service</h3>
+                                    <ul class="footer-links">
+                                        <li><a href="#">My Account</a></li>
+                                        <li><a href="#">View Cart</a></li>
+                                        <li><a href="#">Wishlist</a></li>
+                                        <li><a href="#">Track My Order</a></li>
+                                        <li><a href="{% url 'help' %}">Помощь</a></li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        {% endfor %}
+                        <!-- /row -->
+                    </div>
+                    <!-- /container -->
+                </div>
+                <!-- /top footer -->
+
+                <!-- bottom footer -->
+                <div id="bottom-footer" class="section">
+                    <div class="container">
+                        <!-- row -->
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <ul class="footer-payments">
+                                    <li><a href="#"><i class="fa fa-cc-visa"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-credit-card"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-cc-paypal"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-cc-mastercard"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-cc-discover"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-cc-amex"></i></a></li>
+                                </ul>
+                                <span class="copyright">
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                </span>
+
+
+                            </div>
+                        </div>
+                            <!-- /row -->
+                    </div>
+                    <!-- /container -->
+                </div>
+                <!-- /bottom footer -->
+            </footer>
+            <!-- /FOOTER -->
+
+
+            <div id="popup" class="popup">
+                <div class="popup__body">
+                    <div class="popup__content">
+                        <div class="popup__grid">
+                            {% for category in categories %}
+                            <div class="popup__grid__item">
+                                <a href="{{ category.get_absolute_url }}" class="popup__grid-link-flex">
+                                    <img style="width: 40%" src="{{ category.image.url }}">
+                                    <span class="popup__grid_category_name">{{ category.name }}</span>
+                                </a>
+
+                                <ul>
+                                    {% for subcategory in category.subcategory_set.all %}
+                                    <li>
+                                        <div>
+                                            <a href="{{ subcategory.get_absolute_url }}">
+                                                <span>{{ subcategory.name }}</span>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+
+                                </ul>
+
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
 
 		<!-- jQuery Plugins -->
 		<script src="{% static 'shop/js/jquery.min.js' %}"></script>

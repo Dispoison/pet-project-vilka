@@ -1,6 +1,10 @@
 {% extends 'shop/base/base.html' %}
 {% load shop_tags %}
 
+{% block breadcrumb %}
+    {% show_breadcrumb breadcrumb %}
+{% endblock breadcrumb %}
+
 {% block content %}
     <!-- SECTION -->
     <div class="section">
