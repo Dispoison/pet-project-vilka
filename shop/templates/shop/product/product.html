@@ -1,8 +1,9 @@
 {% extends 'shop/base/base.html' %}
 {% load shop_tags %}
+{% load breadcrumb %}
 
 {% block breadcrumb %}
-    {% show_breadcrumb breadcrumb %}
+    {% show_breadcrumb_product product %}
 {% endblock breadcrumb %}
 
 {% block content %}

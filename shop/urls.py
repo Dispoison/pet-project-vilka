@@ -1,14 +1,14 @@
-from django.urls import path, re_path
-from django.views.generic import RedirectView
+from django.urls import path
 
 from .views import *
 
 urlpatterns = [
-    path('', index, name='home'),
-    path('category/<slug:slug>/', show_category, name='category'),
-    path('subcategory/<slug:slug>/', show_subcategory, name='subcategory'),
-    path('product/<slug:slug>/', show_product, name='product'),
-    path('help', show_help, name='help'),
-    path('about-us', show_about_us, name='about_us'),
-    path('404', handler404, name='404'),
+    path('', MainPageView.as_view(), name='home'),
+    path('category/<slug:slug>/', CategoryView.as_view(), name='category'),
+    path('subcategory/<slug:slug>/', SubcategoryView.as_view(), name='subcategory'),
+    path('product/<slug:slug>/', ProductView.as_view(), name='product'),
+    path('help', HelpView.as_view(), name='help'),
+    path('about-us', AboutUsView.as_view(), name='about_us'),
+    path('sign-in', show_sign_in, name='sign-in'),
+    path('sign-up', show_sign_up, name='sign-up'),
 ]

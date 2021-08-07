@@ -8,7 +8,7 @@ class ProductModelForm(forms.ModelForm):
     }))
 
     class Meta:
-        from shop.models import Product
+        from shop.models.products.product import Product
         model = Product
         fields = '__all__'
 
@@ -19,7 +19,7 @@ class AddProductToCartForm(forms.Form):
 
 class DisplayOptionsForm(forms.Form):
     sort_choices = (('0', 'от дорогих'), ('1', 'от дешевых'))
-    display_num_choices = (('2', '2'), ('5', '5'), ('10', '10'))
+    display_num_choices = (('0', '3'), ('1', '6'), ('2', '9'))
     sort = forms.ChoiceField(choices=sort_choices, label='Сортировка')
     display_num = forms.ChoiceField(choices=display_num_choices, label='Количество')
 

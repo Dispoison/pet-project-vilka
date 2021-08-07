@@ -7,10 +7,10 @@
                     <ul class="breadcrumb-tree">
                         <li><a href="{% url 'home' %}">Главная</a></li>
                         {% for bc in breadcrumb %}
-                            {% if bc.is_active %}
-                            <li class="active">{{ bc.name }}</li>
-                            {% else %}
+                            {% if bc.url %}
                             <li><a href="{{ bc.url }}">{{ bc.name }}</a></li>
+                            {% else %}
+                            <li class="active">{{ bc.name }}</li>
                             {% endif %}
                         {% endfor %}
                     </ul>

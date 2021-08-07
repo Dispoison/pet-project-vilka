@@ -14,7 +14,7 @@
 
 	/////////////////////////////////////////
 
-	// Products Slick
+	// products Slick
 	$('.products-slick').each(function() {
 		var $this = $(this),
 				$nav = $this.attr('data-nav');
@@ -46,7 +46,7 @@
 		});
 	});
 
-	// Products Widget Slick
+	// products Widget Slick
 	$('.products-widget-slick').each(function() {
 		var $this = $(this),
 				$nav = $this.attr('data-nav');

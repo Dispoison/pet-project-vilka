@@ -1,0 +1,2 @@
+from shop.utils.index_page_data.top_discounted_products import TopDiscountedProducts
+from shop.utils.index_page_data.three_random_subcategory_product_set import ThreeRandomSubcategoryProductSet

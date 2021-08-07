@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mptt',
     'shop.apps.ShopConfig',
-    'admin_reorder',
     'polymorphic',
 ]
 
@@ -55,7 +54,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'vilka.urls'
@@ -156,22 +154,3 @@ if DEBUG:
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
     }
-
-
-ADMIN_REORDER = (
-    # Reorder app models
-    {'app': 'shop', 'models': ('shop.Customer',
-                               'shop.Cart',
-                               'shop.CartProduct',
-                               'shop.Category',
-                               'shop.Subcategory',
-                               'shop.Smartphone',
-                               'shop.Tablet',
-                               'shop.SmartphoneAccessory',
-                               'shop.TabletAccessory',
-                               'shop.Notebook',
-                               'shop.Monitor',
-                               'shop.Monoblock',
-                               'shop.SystemUnit',
-                               )},
-)

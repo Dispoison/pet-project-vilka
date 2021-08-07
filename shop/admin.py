@@ -1,9 +1,8 @@
 from django.contrib import admin
-from django.http import HttpResponse
 from django.utils.safestring import mark_safe
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin
 from shop.models import *
-from shop.utils import ProductMixin
+from shop.utils.mixins.product_mixin import ProductMixin
 from shop.forms import ProductModelForm
 
 
@@ -12,7 +11,6 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
-    #ordering = ('level', 'id',)
 
 
 class SubcategoryAdmin(admin.ModelAdmin):
@@ -20,12 +18,12 @@ class SubcategoryAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
-    #ordering = ('level', 'id',)
 
 
 class ProductAdmin(PolymorphicParentModelAdmin):
     base_model = Product
-    child_models = (Smartphone, Tablet, SmartphoneAccessory, TabletAccessory, Notebook, Monitor, Monoblock, SystemUnit)
+    child_models = (Smartphone, Tablet, SmartphoneAccessory, TabletAccessory,
+                    Notebook, Monitor, Monoblock, SystemUnit)
     list_display = ('name', 'discounted_price', 'price', 'get_html_photo')
 
     def __init__(self, *args, **kwargs):
