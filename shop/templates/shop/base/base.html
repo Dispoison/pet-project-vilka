@@ -51,8 +51,13 @@
                         </ul>
                         <ul class="header-links pull-right">
                             <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
+                            {% if request.user.is_authenticated %}
+                            <li><p class="username">{{ user.username }}</p></li>
+                            <li><a href="{% url 'sign-out' %}"><i class="fa fa-user-out"></i> Sign out</a></li>
+                            {% else %}
                             <li><a href="{% url 'sign-in' %}"><i class="fa fa-user-o"></i> Sign in</a></li>
                             <li><a href="{% url 'sign-up' %}"><i class="fa fa-user-up"></i> Sign up</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView
 
 from shop.models.products.product import Product
 from shop.models.categories.category import Category
@@ -133,28 +133,6 @@ class AboutUsView(ViewDataMixin, TemplateView):
         base_context = super().get_context_data(**kwargs)
         mixin_context = self.get_mixin_context()
         return base_context | mixin_context
-
-
-def show_sign_in(request):
-    categories = Category.objects.prefetch_related('subcategory_set')
-    context = {
-        'title': 'Интернет-магазин Vilka',
-        'categories': categories,
-    }
-    return render(request, 'shop/account/sign_in.html', context=context)
-
-
-def show_sign_up(request):
-    categories = Category.objects.prefetch_related('subcategory_set')
-    context = {
-        'title': 'Интернет-магазин Vilka',
-        'categories': categories,
-    }
-    return render(request, 'shop/account/sign_up.html', context=context)
-
-
-class RegisterCustomer(CreateView):
-    pass
 
 
 def handler404(request, exception):

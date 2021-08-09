@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mptt',
     'shop.apps.ShopConfig',
+    'customer.apps.CustomerConfig',
     'polymorphic',
 ]
 
@@ -137,6 +138,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MPTT_ADMIN_LEVEL_INDENT = 30
+
+LOGIN_REDIRECT_URL = '/'
 
 if DEBUG:
     MIDDLEWARE += [

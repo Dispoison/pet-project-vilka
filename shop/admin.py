@@ -125,7 +125,3 @@ admin.site.register(Monitor, MonitorAdmin)
 admin.site.register(Monoblock, MonoblockAdmin)
 admin.site.register(SystemUnit, SystemUnitAdmin)
 
-
-admin.site.register(CartProduct)
-admin.site.register(Cart)
-admin.site.register(Customer)

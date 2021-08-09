@@ -1,0 +1,26 @@
+{% extends 'shop/base/base.html' %}
+
+{% block content %}
+<div class="sign-wrapper">
+    <form method="post" class="sign-form">
+        {% csrf_token %}
+        <div class="section-title">
+            <h3 class="title">Регистрация</h3>
+        </div>
+
+        {% for f in form %}
+        <div class="form-error">{{ f.errors }}</div>
+        <div class="form-group">
+            <label class="form-label" for="{{ f.id_for_label }}">
+                {% if 'password' in f.id_for_label %}
+                <input class="input" type="password" placeholder="{{ f.label }}" name="{{ f.name }}">
+                {% else %}
+                <input class="input" type="text" placeholder="{{ f.label }}" name="{{ f.name }}">
+                {% endif %}
+            </label>
+        </div>
+        {% endfor %}
+        <button class="primary-btn" type="submit">Зарегистрироваться</button>
+    </form>
+</div>
+{% endblock content %}

@@ -20,7 +20,8 @@ from vilka import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('shop.urls'))
+    path('', include('shop.urls')),
+    path('', include('customer.urls')),
 ]
 
 if settings.DEBUG:

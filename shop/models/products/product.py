@@ -6,6 +6,9 @@ from shop.models.categories.subcategory import Subcategory
 
 
 class Product(PolymorphicModel):
+    class Meta:
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
 
     name = models.CharField(max_length=255, verbose_name='Название')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
