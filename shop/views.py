@@ -1,5 +1,8 @@
+from django.contrib.auth import get_user_model
+from django.db.models.signals import m2m_changed
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
+from django.db.models import Case, When
 
 from shop.models.products.product import Product
 from shop.models.categories.category import Category
@@ -8,7 +11,10 @@ from shop.forms import AddProductToCartForm, DisplayOptionsForm
 from shop.utils.mixins.view_data_mixin import ViewDataMixin
 from shop.utils.functions import set_discount
 from shop.utils.index_page_data import *
-from django.db.models import Case, When
+
+from customer.models.customer import Customer
+from customer.models.cart import Cart
+from customer.models.cart_product import CartProduct
 
 
 class MainPageView(ViewDataMixin, ListView):
@@ -93,10 +99,10 @@ class ProductView(ViewDataMixin, DetailView):
 
         from collections import namedtuple
         Field = namedtuple('Field', 'name verbose_name')
-        ProductParentFieldsNumber = len(Product._meta.concrete_fields)
+        product_parent_fields_number = len(Product._meta.concrete_fields)
         product = self.get_object()
         details = [Field(field.name, field.verbose_name)
-                   for field in product._meta.fields][ProductParentFieldsNumber + 1:]
+                   for field in product._meta.fields][product_parent_fields_number + 1:]
         short_description = product.description.split('.')[0]
         other_products = product.__class__.objects.exclude(pk=product.pk).select_related('subcategory')[:4]
         set_discount(other_products)
@@ -113,7 +119,34 @@ class ProductView(ViewDataMixin, DetailView):
     def post(self, request, *args, **kwargs):
         self.form = AddProductToCartForm(request.POST)
         if self.form.is_valid():
-            print(self.form.cleaned_data)
+            form_data = {
+                'user': request.user.username,
+                'quantity': self.form.cleaned_data.get('quantity'),
+                'slug': kwargs.get('slug')
+            }
+            User = get_user_model()
+            customer = Customer.objects.get(user=User.objects.get(username=form_data.get('user')))
+            cart = Cart.objects.get(owner=customer)
+            product = Product.objects.get(slug=form_data.get('slug'))
+            total_price = product.get_price() * form_data.get('quantity')
+
+            same_product = cart.products.filter(object_id=product.pk)
+
+            if not same_product.exists():
+
+                cart_product = CartProduct.objects.create(content_object=product,
+                                                          customer=customer,
+                                                          cart=cart,
+                                                          quantity=form_data.get('quantity'),
+                                                          total_price=total_price)
+                cart.products.add(cart_product)
+            else:
+                cart_product = same_product.first()
+                cart_product.quantity += form_data.get('quantity')
+                cart_product.total_price += total_price
+                cart_product.save()
+                m2m_changed.send(sender=Cart.products.through, instance=cart, action='custom_update',
+                                 quantity=form_data.get('quantity'), total_price=total_price)
         return self.get(request, *args, **kwargs)
 
 

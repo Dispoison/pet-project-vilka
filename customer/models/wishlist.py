@@ -16,7 +16,7 @@ class Wishlist(models.Model):
     total_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена', default=0)
 
     def __str__(self):
-        return str(self.id)
+        return f'Список желаний: {self.owner}'
 
 
 @receiver(post_save, sender=Customer)

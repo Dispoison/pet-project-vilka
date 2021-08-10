@@ -28,3 +28,6 @@ class Product(PolymorphicModel):
     def clean(self):
         if self.discounted_price and self.discounted_price >= self.price:
             raise ValidationError("Цена со скидкой не может превышать или быть равной обычной цене")
+
+    def get_price(self):
+        return self.discounted_price if self.discounted_price else self.price

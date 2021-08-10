@@ -8,13 +8,13 @@ class WishlistProduct(models.Model):
         verbose_name = 'Продукт списка желаний'
         verbose_name_plural = 'Продукты списков желаний'
 
-    user = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE)
+    customer = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE)
     wishlist = models.ForeignKey('Wishlist', verbose_name='Список желаний', on_delete=models.CASCADE, related_name='related_products')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     quantity = models.PositiveIntegerField(default=1)
-    total_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена')
+    total_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена', default=0)
 
     def __str__(self):
         return f'Продукт: {self.content_object.name}'

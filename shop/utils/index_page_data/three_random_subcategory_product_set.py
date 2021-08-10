@@ -12,7 +12,7 @@ class ThreeRandomSubcategoryProductSetManager:
         product_list = poly_set_to_counted_products_list(three_random_subcategory_products)
         for list_prod_model in product_list:
             set_discount(list(list_prod_model.values())[0])
-            return product_list
+        return product_list
 
 
 class ThreeRandomSubcategoryProductSet:
