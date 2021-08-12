@@ -19,7 +19,7 @@
                         <h3 class="product-name"><a href="{{ cart_product.content_object.get_absolute_url }}">{{ cart_product.content_object.name }}</a></h3>
                         <h4 class="product-price"><span class="qty">{{ cart_product.quantity }}x</span>₴{{ cart_product.total_price }}</h4>
                     </div>
-                    <button class="delete" data-object-id="{{ cart_product.pk }}"><i class="fa fa-close"></i></button>
+                    <button class="delete" data-object-id="{{ cart_product.pk }}" data-url="{% url "cart_product_delete" %}"><i class="fa fa-close"></i></button>
                 </div>
                 {% endfor %}
 

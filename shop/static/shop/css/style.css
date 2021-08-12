@@ -2347,6 +2347,6 @@ textarea.input {
   padding: 5px
 }
 
-.dropdown h4 {
+.dropdown .cart-dropdown > h4 {
   text-align: center;
 }

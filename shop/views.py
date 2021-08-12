@@ -199,5 +199,58 @@ class DeleteCartProductView(View):
             return JsonResponse(data={'message': 'Продукт не принадлежит вам'}, status=403)
 
 
+class CreateCartProduct(View):
+    @staticmethod
+    def post(request):
+        product_id = request.POST.get('id')
+        quantity = int(request.POST.get('quantity'))
+
+        customer = request.user.customer
+        cart = customer.cart
+        product = Product.objects.get(pk=product_id)
+        cart_product_total_price = product.get_price() * quantity
+
+        same_product = cart.products.filter(object_id=product_id)
+
+        if not same_product.exists():
+
+            cart_product = CartProduct.objects.create(content_object=product,
+                                                      customer=customer,
+                                                      cart=cart,
+                                                      quantity=quantity,
+                                                      total_price=cart_product_total_price)
+            cart.products.add(cart_product)
+
+            data = {
+                'result': 'created',
+                'cart_product_id': cart_product.pk,
+            }
+        else:
+            cart_product = same_product.first()
+            cart_product.quantity += quantity
+            cart_product.total_price += cart_product_total_price
+            cart_product.save()
+            m2m_changed.send(sender=Cart.products.through, instance=cart, action='custom_update',
+                             quantity=quantity, total_price=cart_product_total_price)
+
+            data = {
+                'result': 'updated',
+                'cart_product_id': cart_product.pk,
+            }
+
+        cart_product_total_price = cart_product.total_price
+        total_quantity = cart_product.quantity
+        total_products = cart.total_products
+        total_price = cart.total_price
+
+        data.update({
+            'cart_product_total_price': cart_product_total_price,
+            'quantity': total_quantity,
+            'total_products': total_products,
+            'total_price': total_price,
+        })
+        return JsonResponse(data=data)
+
+
 def handler404(request, exception):
     return render(request, 'shop/handlers/handler404.html')

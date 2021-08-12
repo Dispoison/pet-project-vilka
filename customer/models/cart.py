@@ -50,5 +50,3 @@ def update_cart_on_m2m_changed(sender, instance, action, **kwargs):
         instance.total_products += kwargs.get('quantity')
         instance.total_price += kwargs.get('total_price')
         instance.save()
-
-
