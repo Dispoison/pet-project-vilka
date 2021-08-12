@@ -32,11 +32,11 @@ def display_options(form):
     return {'form': form}
 
 
-@register.inclusion_tag('shop/base/breadcrumb.html')
-def show_breadcrumb(breadcrumb):
-    return {'breadcrumb': breadcrumb}
-
-
 @register.simple_tag()
 def get_bound_field(form, field):
     return form.fields[field].get_bound_field(form, field).data
+
+
+@register.inclusion_tag('shop/base/cart.html')
+def show_cart(cart, cart_products, request):
+    return {'cart': cart, 'cart_products': cart_products, 'request': request}

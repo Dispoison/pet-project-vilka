@@ -1,4 +1,24 @@
 (function($) {
+	function getCookie(c_name)
+	{
+		if (document.cookie.length > 0)
+		{
+			let c_start = document.cookie.indexOf(c_name + "=");
+			if (c_start != -1)
+			{
+				c_start = c_start + c_name.length + 1;
+				let c_end = document.cookie.indexOf(";", c_start);
+				if (c_end == -1) c_end = document.cookie.length;
+				return unescape(document.cookie.substring(c_start,c_end));
+			}
+		}
+		return "";
+	 }
+	$.ajaxSetup({
+        headers: { "X-CSRFToken": getCookie("csrftoken") }
+    });
+
+
 	"use strict"
 
 	// Mobile Nav toggle
@@ -104,7 +124,6 @@
 
 	// Input number
 	$('.input-number').each(function() {
-		var input_number = document.querySelectorAll('input.number');
 		var $this = $(this),
 		$input = $this.find('input[type="number"]'),
 		up = $this.find('.qty-up'),
@@ -115,16 +134,12 @@
 			value = value < 1 ? 1 : value;
 			$input.val(value);
 			$input.change();
-			input_number.val(value);
-			updatePriceSlider($this , value)
 		})
 
 		up.on('click', function () {
 			var value = parseInt($input.val()) + 1;
 			$input.val(value);
 			$input.change();
-			input_number.val(value);
-			updatePriceSlider($this , value)
 		})
 	});
 
@@ -168,4 +183,49 @@
 			});
 		}
 	}
+
+	$('div.cart-list > div.product-widget > button.delete').each(function (){
+		$(this).on('click', function (){
+		let dataId = $(this).attr('data-object-id');
+		deleteCartProduct(dataId);
+	})
+	})
+
+	function deleteCartProduct(id) {
+		let url = $("#capt-product-delete").attr("data-url");
+		$.ajax({
+			url: url,
+			type: 'POST',
+			data: {
+				'id': id,
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data['total_products'] > 0) {
+					$(`button.delete[data-object-id=${id}]`).parent().remove();
+
+					$('#cart a div.qty').text(data['total_products']);
+
+					let cart_summary_total_products = $('div.cart-summary small');
+					let total_products_splitted_text = cart_summary_total_products.text().split(' ');
+					total_products_splitted_text[0] = data['total_products']
+					cart_summary_total_products.text(total_products_splitted_text.join(' '));
+
+					let cart_summary_total_price = $('div.cart-summary h5');
+					let total_price_splitted_text = cart_summary_total_price.text().split('₴');
+					total_price_splitted_text[1] = data['total_price'].replace('.', ',');
+					cart_summary_total_price.text(total_price_splitted_text.join('₴'));
+				}
+				else {
+					$('#cart a div.qty').remove();
+					$('#cart div.cart-dropdown div.cart-list').remove();
+					$('#cart div.cart-dropdown div.cart-summary').replaceWith('<h4>Корзина пуста</h4>');
+				}
+			},
+			error: function(data) {
+                console.log(`${data['statusText']}(${data['status']}): ${data['responseJSON']['message']}`);
+			}
+		});
+	}
+
 })(jQuery);

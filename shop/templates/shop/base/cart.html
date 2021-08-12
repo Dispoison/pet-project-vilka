@@ -1,0 +1,56 @@
+<div class="dropdown" id="cart">
+{% if request.user.is_authenticated %}
+
+    {% if cart.total_products %}
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+            <i class="fa fa-shopping-cart"></i>
+            <span>Корзина</span>
+            <div class="qty">{{ cart.total_products }}</div>
+        </a>
+        <div class="cart-dropdown">
+            <div class="cart-list">
+
+                {% for cart_product in cart_products %}
+                <div class="product-widget">
+                    <div class="product-img">
+                        <img src="{{ cart_product.content_object.photo.url }}" alt="">
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-name"><a href="{{ cart_product.content_object.get_absolute_url }}">{{ cart_product.content_object.name }}</a></h3>
+                        <h4 class="product-price"><span class="qty">{{ cart_product.quantity }}x</span>₴{{ cart_product.total_price }}</h4>
+                    </div>
+                    <button class="delete" data-object-id="{{ cart_product.pk }}"><i class="fa fa-close"></i></button>
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="cart-summary">
+                <small>{{ cart.total_products }} Продуктов выбрано</small>
+                <h5>СУММА: ₴{{ cart.total_price }}</h5>
+            </div>
+            <div class="cart-btns">
+                <a href="#">View Cart</a>
+                <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    {% else %}
+        <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+            <i class="fa fa-shopping-cart"></i>
+            <span>Корзина</span>
+        </a>
+        <div class="cart-dropdown">
+            <h4>Корзина пуста</h4>
+            <div class="cart-btns">
+                <a href="#">View Cart</a>
+                <a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+    {% endif %}
+
+{% else %}
+<a class="dropdown-toggle" href="{% url 'sign-in' %}">
+    <i class="fa fa-shopping-cart"></i>
+    <span>Корзина</span>
+</a>
+{% endif %}
+</div>

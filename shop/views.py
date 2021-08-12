@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models.signals import m2m_changed
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views import View
+from django.views.generic import ListView, DetailView, TemplateView, DeleteView
 from django.db.models import Case, When
 
 from shop.models.products.product import Product
@@ -70,7 +73,7 @@ class SubcategoryView(ViewDataMixin, ListView):
     def get_queryset(self):
         products = Product.objects.select_related('subcategory').filter(subcategory__slug=self.kwargs['slug']) \
             .annotate(lowest_price=Case(When(discounted_price__isnull=True, then='price'),
-                                        When(discounted_price__isnull=False, then='discounted_price')))\
+                                        When(discounted_price__isnull=False, then='discounted_price'))) \
             .order_by(self.sort)
         set_discount(products)
         return products
@@ -166,6 +169,34 @@ class AboutUsView(ViewDataMixin, TemplateView):
         base_context = super().get_context_data(**kwargs)
         mixin_context = self.get_mixin_context()
         return base_context | mixin_context
+
+
+class DeleteCartProductView(View):
+    @staticmethod
+    def post(request):
+        id = request.POST.get('id')
+        try:
+            cart_product = CartProduct.objects.get(pk=id)
+            if cart_product.customer.user == request.user:
+                cart = cart_product.cart
+                cart_product.delete()
+
+                total_products = cart.total_products
+                total_price = cart.total_price
+
+                data = {
+                    'message': 'Продукт успешно удален из корзины',
+                    'total_products': total_products,
+                    'total_price': total_price,
+                }
+
+                return JsonResponse(data=data)
+            else:
+                raise PermissionDenied
+        except ObjectDoesNotExist:
+            return JsonResponse(data={'message': 'Продукт с заданным id не существует'}, status=400)
+        except PermissionDenied:
+            return JsonResponse(data={'message': 'Продукт не принадлежит вам'}, status=403)
 
 
 def handler404(request, exception):

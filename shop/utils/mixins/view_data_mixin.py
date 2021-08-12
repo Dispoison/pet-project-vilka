@@ -23,3 +23,4 @@ class ViewDataMixin:
             })
 
         return context
+

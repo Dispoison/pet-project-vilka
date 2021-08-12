@@ -2346,3 +2346,7 @@ textarea.input {
   font-weight: bold;
   padding: 5px
 }
+
+.dropdown h4 {
+  text-align: center;
+}
