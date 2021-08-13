@@ -79,12 +79,11 @@
                                             </div>
                                             <div class="product-btns">
                                                 <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">добавить в список желаемого</span></button>
-                                                <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">добавить в список сравнений</span></button>
                                                 <button class="quick-view"><a href="{{ product.get_absolute_url }}"><i class="fa fa-eye"></i><span class="tooltipp">посмотреть</span></a></button>
                                             </div>
                                         </div>
                                         <div class="add-to-cart">
-                                            <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> в корзину</button>
+                                            <button type="submit" class="add-to-cart-btn" data-url="{% url "cart_product_create" %}" data-id="{{ product.pk }}" data-product-url="{{ product.get_absolute_url }}" data-delete-url="{% url "cart_product_delete" %}"><i class="fa fa-shopping-cart"></i>в корзину</button>
                                         </div>
                                     </div>
                                     {% endfor %}

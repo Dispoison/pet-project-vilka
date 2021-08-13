@@ -22,7 +22,8 @@ def show_breadcrumb_subcategory(product):
 @register.inclusion_tag('shop/base/breadcrumb.html')
 def show_breadcrumb_product(product):
     breadcrumb = [Breadcrumb(product.subcategory.parent, product.subcategory.parent.get_absolute_url()),
-                  Breadcrumb(product.subcategory, None)]
+                  Breadcrumb(product.subcategory, product.subcategory.get_absolute_url()),
+                  Breadcrumb(product, None)]
     return {'breadcrumb': breadcrumb}
 
 

@@ -29,3 +29,8 @@ def create_customer(sender, instance, created, **kwargs):
 def save_customer(sender, instance, **kwargs):
     instance.customer.save()
 
+
+@receiver(post_save, sender=Customer)
+def save_cart_and_wishlist(sender, instance, **kwargs):
+    instance.cart.save()
+    instance.wishlist.save()

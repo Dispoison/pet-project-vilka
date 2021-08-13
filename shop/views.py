@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models.signals import m2m_changed
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView, DeleteView
@@ -203,7 +203,9 @@ class CreateCartProduct(View):
     @staticmethod
     def post(request):
         product_id = request.POST.get('id')
-        quantity = int(request.POST.get('quantity'))
+        quantity = request.POST.get('quantity')
+
+        quantity = 1 if quantity is None else int(quantity)
 
         customer = request.user.customer
         cart = customer.cart
@@ -245,7 +247,7 @@ class CreateCartProduct(View):
 
         data.update({
             'cart_product_total_price': cart_product_total_price,
-            'quantity': total_quantity,
+            'total_quantity': total_quantity,
             'total_products': total_products,
             'total_price': total_price,
         })
@@ -254,3 +256,4 @@ class CreateCartProduct(View):
 
 def handler404(request, exception):
     return render(request, 'shop/handlers/handler404.html')
+

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save, post_delete, m2m_changed
+from django.db.models.signals import post_delete, m2m_changed, post_save
 from django.dispatch import receiver
 
 from customer.models.customer import Customer
@@ -24,11 +24,6 @@ class Cart(models.Model):
 def create_cart(sender, instance, created, **kwargs):
     if created:
         Cart.objects.create(owner=instance)
-
-
-@receiver(post_save, sender=Customer)
-def save_cart(sender, instance, **kwargs):
-    instance.cart.save()
 
 
 @receiver(post_delete, sender=CartProduct)

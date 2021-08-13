@@ -244,13 +244,29 @@
 	$('div.add-to-cart > button.add-to-cart-btn').each(function (){
 		$(this).on('click', function (){
 			let id = $(this).attr("data-id");
+			let quantity;
 			let url = $(this).attr("data-url");
-			let quantity = $('div.add-to-cart div.input-number > input#quantity').attr('value');
-			createCartProduct(id, url, quantity);
+			let product_url = $(this).attr('data-product-url');
+			let cart_product_delete_url = $(this).attr('data-delete-url');
+			let product_name;
+			let photo_url;
+
+			if ($(`button.add-to-cart-btn[data-id=${id}]`).parent('div.add-to-cart').parent('div.product').length) {
+				quantity = 1;
+				product_name = $(this).parent('div.add-to-cart').siblings('div.product-body').find('h3.product-name a').text();
+				photo_url = $(this).closest('div.product').find('a div.product-img img').attr('src');
+			}
+			else{
+				quantity = $('div.add-to-cart div.input-number > input#quantity').attr('value');
+				product_name = $('h2.product-name').text();
+				photo_url = $('div.product-preview img').first().attr('src');
+			}
+
+			createCartProduct(id, quantity, url, product_url, cart_product_delete_url, product_name, photo_url);
 		})
 	})
 
-	function createCartProduct(id, url, quantity) {
+	function createCartProduct(id, quantity, url, product_url, cart_product_delete_url, product_name, photo_url) {
 		$.ajax({
 			url: url,
 			type: 'POST',
@@ -262,11 +278,10 @@
 			success: function (data) {
 				let cart_product_total_price = data['cart_product_total_price'];
 				let cart_product_id = data['cart_product_id'];
-				let quantity = data['quantity'];
+				let total_quantity = data['total_quantity'];
 
 				switch (data['result']) {
 					case 'created':
-						let add_button = $('div.add-to-cart > button.add-to-cart-btn');
 
 						let cart_list = $('div.cart-list');
 
@@ -281,19 +296,13 @@
 							cart_list = cart_dropdown.children('div.cart-list');
 						}
 
-						let product_name = $('h2.product-name').text();
-						let photo_url = $('div.product-preview img').first().attr('src');
-						let product_url = add_button.attr('data-product-url');
-						let cart_product_delete_url = add_button.attr('data-delete-url');
-
-
 						cart_list.append("<div class=\"product-widget\">\n" +
 							"                    <div class=\"product-img\">\n" +
 							`                        <img src=\"${photo_url}\" alt=\"\">\n` +
 							"                    </div>\n" +
 							"                    <div class=\"product-body\">\n" +
 							`                        <h3 class=\"product-name\"><a href=\"${product_url}\">${product_name}</a></h3>\n` +
-							`                        <h4 class=\"product-price\"><span class=\"qty\">${quantity}x</span>₴${cart_product_total_price}</h4>\n` +
+							`                        <h4 class=\"product-price\"><span class=\"qty\">${total_quantity}x</span>₴${cart_product_total_price}</h4>\n` +
 							"                    </div>\n" +
 							`                    <button class=\"delete\" data-object-id=\"${cart_product_id}\" data-url=\"${cart_product_delete_url}\"><i class=\"fa fa-close\"></i></button>\n` +
 							"                </div>");
@@ -310,7 +319,7 @@
 					case 'updated':
 						let product_price = $(`#cart button.delete[data-object-id=${cart_product_id}]`).siblings('div.product-body').children('h4.product-price')
 						product_price.text(`₴${cart_product_total_price}`)
-						product_price.prepend(`<span class="qty">${quantity}x</span>`)
+						product_price.prepend(`<span class="qty">${total_quantity}x</span>`)
 						updateCart(data);
 						break;
 				}
