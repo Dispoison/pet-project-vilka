@@ -186,11 +186,14 @@
 		}
 	}
 
-	$('div.cart-list > div.product-widget > button.delete').each(function (){
+	/*
+			Cart
+	 */
+
+	$('#cart div.cart-list > div.product-widget > button.delete').each(function (){
 		$(this).on('click', function (){
 		let dataId = $(this).attr('data-object-id');
-		let url = $("#cart button.delete").attr("data-url");
-		deleteCartProduct(dataId, url);
+		deleteCartProduct(dataId);
 	})
 	})
 
@@ -215,9 +218,9 @@
 		cartSummaryTotalPrice.text(totalPriceSplittedText.join('₴'));
 	}
 
-	function deleteCartProduct(id, url) {
+	function deleteCartProduct(id) {
 		$.ajax({
-			url: url,
+			url: $('#cart').attr('data-delete-url'),
 			type: 'POST',
 			data: {
 				'id': id,
@@ -245,9 +248,7 @@
 		$(this).on('click', function (){
 			let id = $(this).attr("data-id");
 			let quantity;
-			let url = $(this).attr("data-url");
 			let product_url = $(this).attr('data-product-url');
-			let cart_product_delete_url = $(this).attr('data-delete-url');
 			let product_name;
 			let photo_url;
 
@@ -262,13 +263,13 @@
 				photo_url = $('div.product-preview img').first().attr('src');
 			}
 
-			createCartProduct(id, quantity, url, product_url, cart_product_delete_url, product_name, photo_url);
+			createCartProduct(id, quantity, product_url, product_name, photo_url);
 		})
 	})
 
-	function createCartProduct(id, quantity, url, product_url, cart_product_delete_url, product_name, photo_url) {
+	function createCartProduct(id, quantity, product_url, product_name, photo_url) {
 		$.ajax({
-			url: url,
+			url: $('#cart').attr('data-create-url'),
 			type: 'POST',
 			data: {
 				'id': id,
@@ -304,14 +305,13 @@
 							`                        <h3 class=\"product-name\"><a href=\"${product_url}\">${product_name}</a></h3>\n` +
 							`                        <h4 class=\"product-price\"><span class=\"qty\">${total_quantity}x</span>₴${cart_product_total_price}</h4>\n` +
 							"                    </div>\n" +
-							`                    <button class=\"delete\" data-object-id=\"${cart_product_id}\" data-url=\"${cart_product_delete_url}\"><i class=\"fa fa-close\"></i></button>\n` +
+							`                    <button class=\"delete\" data-object-id=\"${cart_product_id}\"><i class=\"fa fa-close\"></i></button>\n` +
 							"                </div>");
 
 						let button = $(`button.delete[data-object-id=${cart_product_id}]`)
 						button.on('click', function (){
 							let dataId = $(this).attr('data-object-id');
-							let url = $("#cart button.delete").attr("data-url");
-							deleteCartProduct(dataId, url);
+							deleteCartProduct(dataId);
 						})
 
 						updateCart(data);
@@ -325,9 +325,122 @@
 				}
 			},
 			error: function(data) {
+                console.log(`${data['statusText']}(${data['status']}): ${data['message']}`);
+			}
+		});
+	}
+
+	/*
+			Wishlist
+	 */
+
+	$('#wishlist div.wishlist-list > div.product-widget > button.delete').each(function (){
+		$(this).on('click', function (){
+		let dataId = $(this).attr('data-object-id');
+		deleteWishlistProduct(dataId);
+	})
+	})
+
+	function updateWishlist(data){
+		let quantity = $('#wishlist a div.qty')
+		if (quantity.length){
+			quantity.text(data['total_products']);
+		}
+		else{
+			let qty_parent = $('#wishlist a.dropdown-toggle');
+			qty_parent.append(`<div class=\"qty\">${data['total_products']}</div>`)
+		}
+	}
+
+	function deleteWishlistProduct(id) {
+		$.ajax({
+			url: $('#wishlist').attr('data-delete-url'),
+			type: 'POST',
+			data: {
+				'id': id,
+			},
+			dataType: 'json',
+			success: function (data) {
+				if (data['total_products'] > 0) {
+					$(`#wishlist button.delete[data-object-id=${id}]`).parent().remove();
+
+					updateWishlist(data);
+				}
+				else {
+					$('#wishlist a div.qty').remove();
+					$('#wishlist div.wishlist-dropdown div.wishlist-list').replaceWith('<h4>Желаемого нет</h4>');
+				}
+			},
+			error: function(data) {
                 console.log(`${data['statusText']}(${data['status']}): ${data['responseJSON']['message']}`);
 			}
 		});
 	}
+
+	$('.add-to-wishlist').each(function (){
+		$(this).on('click', function (){
+			let id = $(this).attr("data-id");
+			let product_url = $(this).attr('data-product-url');
+			let product_name;
+			let photo_url;
+
+			if ($(this).is('button'))  {
+				product_name = $(this).parent('div.product-btns').siblings('h3.product-name').children('a').text();
+				photo_url = $(this).closest('div.product').find('a div.product-img img').attr('src');
+			}
+			else if ($(this).is('div')) {
+				product_name = $('h2.product-name').text();
+				photo_url = $('div.product-preview img').first().attr('src');
+			}
+
+			createWishlistProduct(id, product_url, product_name, photo_url);
+		})
+	})
+
+	function createWishlistProduct(id, product_url, product_name, photo_url) {
+		$.ajax({
+			url: $('#wishlist').attr('data-create-url'),
+			type: 'POST',
+			data: {
+				'id': id,
+			},
+			dataType: 'json',
+			success: function (data) {
+				let wishlist_product_id = data['wishlist_product_id'];
+
+				let wishlist_list = $('div.wishlist-list');
+
+				if (wishlist_list.length === 0){
+					let wishlist_dropdown = $('#wishlist div.wishlist-dropdown');
+					wishlist_dropdown.children('h4').remove()
+					wishlist_dropdown.prepend("<div class=\"wishlist-list\"></div>")
+
+					wishlist_list = wishlist_dropdown.children('div.wishlist-list');
+				}
+
+				wishlist_list.append("<div class=\"product-widget\">\n" +
+					"                    <div class=\"product-img\">\n" +
+					`                        <img src=\"${photo_url}\" alt=\"\">\n` +
+					"                    </div>\n" +
+					"                    <div class=\"product-body\">\n" +
+					`                        <h3 class=\"product-name\"><a href=\"${product_url}\">${product_name}</a></h3>\n` +
+					"                    </div>\n" +
+					`                    <button class=\"delete\" data-object-id=\"${wishlist_product_id}\"><i class=\"fa fa-close\"></i></button>\n` +
+					"                </div>");
+
+				let button = $(`button.delete[data-object-id=${wishlist_product_id}]`)
+				button.on('click', function (){
+					let dataId = $(this).attr('data-object-id');
+					deleteWishlistProduct(dataId);
+				})
+
+				updateWishlist(data);
+			},
+			error: function(data) {
+                console.log(`${data['statusText']}(${data['status']}): ${data['responseJSON']['message']}`);
+			}
+		});
+	}
+
 
 })(jQuery);

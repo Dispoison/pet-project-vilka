@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models.signals import m2m_changed
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
-from django.views.generic import ListView, DetailView, TemplateView, DeleteView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.db.models import Case, When
 
 from shop.models.products.product import Product
@@ -18,6 +18,8 @@ from shop.utils.index_page_data import *
 from customer.models.customer import Customer
 from customer.models.cart import Cart
 from customer.models.cart_product import CartProduct
+from customer.models.wishlist import Wishlist
+from customer.models.wishlist_product import WishlistProduct
 
 
 class MainPageView(ViewDataMixin, ListView):
@@ -199,7 +201,7 @@ class DeleteCartProductView(View):
             return JsonResponse(data={'message': 'Продукт не принадлежит вам'}, status=403)
 
 
-class CreateCartProduct(View):
+class CreateCartProductView(View):
     @staticmethod
     def post(request):
         product_id = request.POST.get('id')
@@ -226,6 +228,7 @@ class CreateCartProduct(View):
             data = {
                 'result': 'created',
                 'cart_product_id': cart_product.pk,
+                'message': 'Продукт успешно добавлен в корзину',
             }
         else:
             cart_product = same_product.first()
@@ -238,6 +241,7 @@ class CreateCartProduct(View):
             data = {
                 'result': 'updated',
                 'cart_product_id': cart_product.pk,
+                'message': 'Продукт в корзине успешно обновлен',
             }
 
         cart_product_total_price = cart_product.total_price
@@ -252,6 +256,61 @@ class CreateCartProduct(View):
             'total_price': total_price,
         })
         return JsonResponse(data=data)
+
+
+class DeleteWishlistProductView(View):
+    @staticmethod
+    def post(request):
+        id = request.POST.get('id')
+        try:
+            wishlist_product = WishlistProduct.objects.get(pk=id)
+            if wishlist_product.customer.user == request.user:
+                wishlist = wishlist_product.wishlist
+                wishlist_product.delete()
+
+                total_products = wishlist.total_products
+
+                data = {
+                    'total_products': total_products,
+                    'message': 'Продукт успешно удален из желаемого',
+                }
+
+                return JsonResponse(data=data)
+            else:
+                raise PermissionDenied
+        except ObjectDoesNotExist:
+            return JsonResponse(data={'message': 'Продукт с заданным id не существует'}, status=400)
+        except PermissionDenied:
+            return JsonResponse(data={'message': 'Продукт не принадлежит вам'}, status=403)
+
+
+class CreateWishlistProductView(View):
+    @staticmethod
+    def post(request):
+        product_id = request.POST.get('id')
+
+        customer = request.user.customer
+        wishlist = customer.wishlist
+        product = Product.objects.get(pk=product_id)
+
+        same_product = wishlist.products.filter(object_id=product_id)
+
+        if not same_product.exists():
+
+            wishlist_product = WishlistProduct.objects.create(content_object=product,
+                                                              customer=customer,
+                                                              wishlist=wishlist)
+            wishlist.products.add(wishlist_product)
+            total_products = wishlist.total_products
+
+            data = {
+                'wishlist_product_id': wishlist_product.pk,
+                'total_products': total_products,
+                'message': 'Продукт успешно добавлен в корзину',
+            }
+            return JsonResponse(data=data)
+        else:
+            return JsonResponse(data={'message': 'Продукт уже находится в желаемом'}, status=400)
 
 
 def handler404(request, exception):

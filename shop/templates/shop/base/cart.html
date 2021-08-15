@@ -1,4 +1,4 @@
-<div class="dropdown" id="cart">
+<div class="dropdown" id="cart" data-create-url="{% url "cart_product_create" %}" data-delete-url="{% url "cart_product_delete" %}">
 {% if request.user.is_authenticated %}
 
     {% if cart.total_products %}

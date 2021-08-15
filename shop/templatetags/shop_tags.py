@@ -40,3 +40,8 @@ def get_bound_field(form, field):
 @register.inclusion_tag('shop/base/cart.html')
 def show_cart(cart, cart_products, request):
     return {'cart': cart, 'cart_products': cart_products, 'request': request}
+
+
+@register.inclusion_tag('shop/base/wishlist.html')
+def show_wishlist(wishlist, wishlist_products, request):
+    return {'wishlist': wishlist, 'wishlist_products': wishlist_products, 'request': request}

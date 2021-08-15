@@ -10,5 +10,7 @@ urlpatterns = [
     path('help', HelpView.as_view(), name='help'),
     path('about-us', AboutUsView.as_view(), name='about_us'),
     path('cart-product/delete/', DeleteCartProductView.as_view(), name='cart_product_delete'),
-    path('cart-product/create/', CreateCartProduct.as_view(), name='cart_product_create'),
+    path('cart-product/create/', CreateCartProductView.as_view(), name='cart_product_create'),
+    path('wishlist-product/delete/', DeleteWishlistProductView.as_view(), name='wishlist_product_delete'),
+    path('wishlist-product/create/', CreateWishlistProductView.as_view(), name='wishlist_product_create'),
 ]

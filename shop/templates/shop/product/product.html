@@ -76,12 +76,12 @@
                                     <span class="qty-down">-</span>
                                 </div>
                             </div>
-                            <button type="submit" class="add-to-cart-btn" data-url="{% url "cart_product_create" %}" data-id="{{ product.pk }}" data-product-url="{{ product.get_absolute_url }}" data-delete-url="{% url "cart_product_delete" %}"><i class="fa fa-shopping-cart"></i>в корзину</button>
+                            <button type="submit" class="add-to-cart-btn" data-id="{{ product.pk }}" data-product-url="{{ product.get_absolute_url }}"><i class="fa fa-shopping-cart"></i>в корзину</button>
                         </div>
 
-                        <ul class="product-btns">
-                            <li><a href="#"><i class="fa fa-heart-o"></i> добавить в желаемое</a></li>
-                        </ul>
+                        <div class="product-btns">
+                            <div class="add-to-wishlist" data-id="{{ product.pk }}" data-product-url="{{ product.get_absolute_url }}"><a><i class="fa fa-heart-o"></i> добавить в желаемое</a></div>
+                        </div>
 
                     </div>
                 </div>
@@ -350,12 +350,12 @@
                             <div class="product-rating">
                             </div>
                             <div class="product-btns">
-                                <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">добавить в список желаемого</span></button>
+                                <button class="add-to-wishlist" data-id="{{ other_product.pk }}" data-product-url="{{ other_product.get_absolute_url }}"><i class="fa fa-heart-o"></i><span class="tooltipp">добавить в список желаемого</span></button>
                                 <button class="quick-view"><a href="{{ other_product.get_absolute_url }}"><i class="fa fa-eye"></i><span class="tooltipp">посмотреть</span></a></button>
                             </div>
                         </div>
                         <div class="add-to-cart">
-                            <button type="submit" class="add-to-cart-btn" data-url="{% url "cart_product_create" %}" data-id="{{ other_product.pk }}" data-product-url="{{ other_product.get_absolute_url }}" data-delete-url="{% url "cart_product_delete" %}"><i class="fa fa-shopping-cart"></i>в корзину</button>
+                            <button type="submit" class="add-to-cart-btn" data-id="{{ other_product.pk }}" data-product-url="{{ other_product.get_absolute_url }}"><i class="fa fa-shopping-cart"></i>в корзину</button>
                         </div>
                     </div>
                 </div>
