@@ -32,6 +32,11 @@
 		e.stopPropagation();
 	});
 
+	// Fix wishlist dropdown from closing
+	$('.wishlist-dropdown').on('click', function (e) {
+		e.stopPropagation();
+	});
+
 	/////////////////////////////////////////
 
 	// products Slick
