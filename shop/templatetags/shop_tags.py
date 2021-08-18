@@ -14,17 +14,17 @@ def products_slice(subcategory, i):
     return subcategory[i * 3:i * 3 + 3]
 
 
+@register.filter
+def times(count):
+    return range(1, int(count)+1)
+
+
 @register.simple_tag(name='getattr')
 def get_attribute(obj, field):
     from collections import namedtuple
     Field = namedtuple('Field', 'verbose_name value')
     value = getattr(obj, field.name)
     return Field(field.verbose_name, value)
-
-
-@register.inclusion_tag('shop/product/add_to_cart.html')
-def show_add_to_cart(form):
-    return {'form': form}
 
 
 @register.inclusion_tag('shop/subcategory/display_options.html')

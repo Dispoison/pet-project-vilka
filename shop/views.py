@@ -10,7 +10,7 @@ from django.db.models import Case, When
 from shop.models.products.product import Product
 from shop.models.categories.category import Category
 from shop.models.categories.subcategory import Subcategory
-from shop.forms import AddProductToCartForm, DisplayOptionsForm
+from shop.forms import DisplayOptionsForm
 from shop.utils.mixins.view_data_mixin import ViewDataMixin
 from shop.utils.functions import set_discount
 from shop.utils.index_page_data import *
@@ -20,6 +20,7 @@ from customer.models.cart import Cart
 from customer.models.cart_product import CartProduct
 from customer.models.wishlist import Wishlist
 from customer.models.wishlist_product import WishlistProduct
+from customer.models.review import Review
 
 
 class MainPageView(ViewDataMixin, ListView):
@@ -97,8 +98,6 @@ class ProductView(ViewDataMixin, DetailView):
     template_name = 'shop/product/product.html'
     context_object_name = 'product'
 
-    form = AddProductToCartForm
-
     def get_context_data(self, *, object_list=None, **kwargs):
         base_context = super().get_context_data(**kwargs)
 
@@ -111,48 +110,16 @@ class ProductView(ViewDataMixin, DetailView):
         short_description = product.description.split('.')[0]
         other_products = product.__class__.objects.exclude(pk=product.pk).select_related('subcategory')[:4]
         set_discount(other_products)
+        reviews = Review.objects.filter(object_id=product.pk)
 
         mixin_context = self.get_mixin_context(details=details,
                                                short_description=short_description,
                                                other_products=other_products,
-                                               form=self.form)
+                                               reviews=reviews)
         return base_context | mixin_context
 
     def get_object(self, queryset=None):
-        return Product.objects.get_queryset().prefetch_related('photos').get(slug=self.kwargs[self.slug_url_kwarg])
-
-    def post(self, request, *args, **kwargs):
-        self.form = AddProductToCartForm(request.POST)
-        if self.form.is_valid():
-            form_data = {
-                'user': request.user.username,
-                'quantity': self.form.cleaned_data.get('quantity'),
-                'slug': kwargs.get('slug')
-            }
-            User = get_user_model()
-            customer = Customer.objects.get(user=User.objects.get(username=form_data.get('user')))
-            cart = Cart.objects.get(owner=customer)
-            product = Product.objects.get(slug=form_data.get('slug'))
-            total_price = product.get_price() * form_data.get('quantity')
-
-            same_product = cart.products.filter(object_id=product.pk)
-
-            if not same_product.exists():
-
-                cart_product = CartProduct.objects.create(content_object=product,
-                                                          customer=customer,
-                                                          cart=cart,
-                                                          quantity=form_data.get('quantity'),
-                                                          total_price=total_price)
-                cart.products.add(cart_product)
-            else:
-                cart_product = same_product.first()
-                cart_product.quantity += form_data.get('quantity')
-                cart_product.total_price += total_price
-                cart_product.save()
-                m2m_changed.send(sender=Cart.products.through, instance=cart, action='custom_update',
-                                 quantity=form_data.get('quantity'), total_price=total_price)
-        return self.get(request, *args, **kwargs)
+        return Product.objects.get_queryset().prefetch_related('photos').select_related('rating').get(slug=self.kwargs[self.slug_url_kwarg])
 
 
 class HelpView(ViewDataMixin, TemplateView):
@@ -313,6 +280,33 @@ class CreateWishlistProductView(View):
             return JsonResponse(data={'message': 'Продукт уже находится в желаемом'}, status=400)
 
 
+class CreateReviewView(View):
+    @staticmethod
+    def post(request):
+        product_id = request.POST.get('product-id')
+        rating = request.POST.get('rating')
+        text = request.POST.get('text')
+
+        product = Product.objects.get(pk=product_id)
+        customer = request.user.customer
+
+        Review.objects.create(author=customer,
+                              content_object=product,
+                              text=text,
+                              rating=rating)
+
+        return JsonResponse(data={'message': f'{product_id}-{rating}-{text}-{customer}'})
+
+        # same_product = wishlist.products.filter(object_id=product_id)
+        #
+        # if not same_product.exists():
+        #     data = {
+        #         'message': 'Продукт успешно добавлен в корзину',
+        #     }
+        #     return JsonResponse(data=data)
+        # else:
+        #     return JsonResponse(data={'message': 'Продукт уже находится в желаемом'}, status=400)
+
+
 def handler404(request, exception):
     return render(request, 'shop/handlers/handler404.html')
-

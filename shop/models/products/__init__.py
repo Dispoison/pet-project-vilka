@@ -8,3 +8,4 @@ from shop.models.products.notebook import Notebook
 from shop.models.products.monitor import Monitor
 from shop.models.products.system_unit import SystemUnit
 from shop.models.products.monoblock import Monoblock
+from shop.models.products.product_rating import ProductRating

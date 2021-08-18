@@ -1,7 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from polymorphic.models import PolymorphicModel
+
+from shop.models.products.product_rating import ProductRating
 from shop.models.categories.subcategory import Subcategory
 
 
@@ -31,3 +35,9 @@ class Product(PolymorphicModel):
 
     def get_price(self):
         return self.discounted_price if self.discounted_price else self.price
+
+
+@receiver(post_save)
+def create_product_rating(sender, instance, created, **kwargs):
+    if isinstance(instance, Product) and created:
+        ProductRating.objects.create(product=instance)

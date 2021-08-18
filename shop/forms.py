@@ -13,10 +13,6 @@ class ProductModelForm(forms.ModelForm):
         fields = '__all__'
 
 
-class AddProductToCartForm(forms.Form):
-    quantity = forms.IntegerField(label='Количетсво', initial=1)
-
-
 class DisplayOptionsForm(forms.Form):
     sort_choices = (('0', 'от дорогих'), ('1', 'от дешевых'))
     display_num_choices = (('0', '3'), ('1', '6'), ('2', '9'))

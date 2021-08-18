@@ -447,5 +447,41 @@
 		});
 	}
 
+	let rating = 0;
+	$('input[name=rating]').each(function (){
+		$(this).on('click', function (){
+			rating = $(this).attr('value')
+		})
+	})
+
+
+	$('#review-form .primary-btn').on('click', function (){
+		if (rating > 0 && rating <= 5){
+			let text = $(this).siblings('textarea').val();
+			sendReview($(this), text);
+		}
+		else {
+			console.error('Недопустимое значение рейтинга: ' + rating);
+		}
+	})
+
+	function sendReview(btn, text){
+		$.ajax({
+			url: btn.attr('data-create-url'),
+			type: 'POST',
+			data: {
+				'product-id': btn.attr('data-id'),
+				'rating': rating,
+				'text': text,
+			},
+			dataType: 'json',
+			success: function (data) {
+				console.log(data)
+			},
+			error: function(data) {
+                console.log(`${data['statusText']}(${data['status']}): ${data['responseJSON']['message']}`);
+			}
+		});
+	}
 
 })(jQuery);

@@ -1719,6 +1719,12 @@ textarea.input {
   color: #D10024;
 }
 
+.rating-avg .rating-stars>i.fa-star-half-full {
+  color: #D10024;
+}
+
+
+
 .rating li {
   margin: 5px 0px;
 }
