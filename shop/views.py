@@ -1,5 +1,6 @@
-from django.contrib.auth import get_user_model
+from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models.signals import m2m_changed
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -10,17 +11,19 @@ from django.db.models import Case, When
 from shop.models.products.product import Product
 from shop.models.categories.category import Category
 from shop.models.categories.subcategory import Subcategory
+from shop.models.products.product_rating import ProductRating
 from shop.forms import DisplayOptionsForm
 from shop.utils.mixins.view_data_mixin import ViewDataMixin
 from shop.utils.functions import set_discount
 from shop.utils.index_page_data import *
 
-from customer.models.customer import Customer
 from customer.models.cart import Cart
 from customer.models.cart_product import CartProduct
-from customer.models.wishlist import Wishlist
 from customer.models.wishlist_product import WishlistProduct
 from customer.models.review import Review
+
+from datetime import datetime
+from babel.dates import format_datetime
 
 
 class MainPageView(ViewDataMixin, ListView):
@@ -110,7 +113,7 @@ class ProductView(ViewDataMixin, DetailView):
         short_description = product.description.split('.')[0]
         other_products = product.__class__.objects.exclude(pk=product.pk).select_related('subcategory')[:4]
         set_discount(other_products)
-        reviews = Review.objects.filter(object_id=product.pk)
+        reviews = Review.objects.filter(object_id=product.pk)[:3]
 
         mixin_context = self.get_mixin_context(details=details,
                                                short_description=short_description,
@@ -119,7 +122,8 @@ class ProductView(ViewDataMixin, DetailView):
         return base_context | mixin_context
 
     def get_object(self, queryset=None):
-        return Product.objects.get_queryset().prefetch_related('photos').select_related('rating').get(slug=self.kwargs[self.slug_url_kwarg])
+        return Product.objects.get_queryset().prefetch_related('photos').select_related('rating').get(
+            slug=self.kwargs[self.slug_url_kwarg])
 
 
 class HelpView(ViewDataMixin, TemplateView):
@@ -290,22 +294,63 @@ class CreateReviewView(View):
         product = Product.objects.get(pk=product_id)
         customer = request.user.customer
 
-        Review.objects.create(author=customer,
-                              content_object=product,
-                              text=text,
-                              rating=rating)
+        review = Review.objects.create(author=customer,
+                                       content_object=product,
+                                       text=text,
+                                       rating=rating)
 
-        return JsonResponse(data={'message': f'{product_id}-{rating}-{text}-{customer}'})
+        product_rating = ProductRating.objects.get(product_id=review.object_id)
 
-        # same_product = wishlist.products.filter(object_id=product_id)
-        #
-        # if not same_product.exists():
-        #     data = {
-        #         'message': 'Продукт успешно добавлен в корзину',
-        #     }
-        #     return JsonResponse(data=data)
-        # else:
-        #     return JsonResponse(data={'message': 'Продукт уже находится в желаемом'}, status=400)
+        data = {'username': customer.user.username,
+                'created_at': format_datetime(review.created_at, 'dd MMMM yyyy г. hh:mm', locale='ru'),
+                'rating': review.rating,
+                'text': text,
+                'product_rating': product.rating.rating,
+                'five_star_count': product_rating.five_star_count,
+                'four_star_count': product_rating.four_star_count,
+                'three_star_count': product_rating.three_star_count,
+                'two_star_count': product_rating.two_star_count,
+                'one_star_count': product_rating.one_star_count,
+                'total_stars_count': product_rating.total_stars_count,
+                'message': 'Отзыв успешно создан'}
+
+        return JsonResponse(data=data)
+
+
+class MoreReviewsView(View):
+    @staticmethod
+    def get(request):
+        shown_size = 3
+        product_id = int(request.GET.get('product_id'))
+        earliest_review_id = int(request.GET.get('earliest_review_id'))
+        data = dict()
+
+        review_objects = Review.objects.filter(object_id=product_id, pk__lt=earliest_review_id)[:shown_size + 1]
+
+        if not review_objects:
+            data.update({'message': 'Больше нет отзывов'})
+            return JsonResponse(data=data, status=400)
+
+        if len(review_objects) < 4:
+            data.update({'nothing_else': True})
+
+        reviews = []
+
+        for i, review in enumerate(review_objects[:shown_size]):
+            review_data = {'username': review.author.user.username,
+                           'created_at': format_datetime(review.created_at, 'dd MMMM yyyy г. hh:mm', locale='ru'),
+                           'rating': review.rating,
+                           'text': review.text}
+
+            if i + 1 == shown_size:
+                review_data['earliest-review'] = True
+                review_data['review_id'] = review.pk
+
+            reviews.append(review_data)
+
+        data.update({'reviews': reviews, 'message': 'Успешно доставлены дополнительные отзывы'})
+
+        return JsonResponse(data=data)
 
 
 def handler404(request, exception):

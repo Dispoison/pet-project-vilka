@@ -49,13 +49,9 @@
                         <h2 class="product-name">{{ product.name }}</h2>
                         <div>
                             <div class="product-rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-o"></i>
+                                {% show_stars product.rating.rating %}
                             </div>
-                            <a class="review-link" href="#">{{ reviews.count }} Отзывов | Добавьте ваш отзыв</a>
+                            <a class="review-link">{{ product.rating.total_stars_count }} Отзывов | Добавьте ваш отзыв</a>
                         </div>
                         <div>
                             {% if product.discounted_price %}
@@ -92,9 +88,9 @@
                     <div id="product-tab">
                         <!-- product tab nav -->
                         <ul class="tab-nav">
-                            <li class="active"><a data-toggle="tab" href="#tab1">Описание</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Характеристики</a></li>
-                            <li><a data-toggle="tab" href="#tab3">Отзывы ({{ reviews.count }})</a></li>
+                            <li class="active"><a id="tab-description" data-toggle="tab" href="#tab1">Описание</a></li>
+                            <li><a id="tab-details" data-toggle="tab" href="#tab2">Характеристики</a></li>
+                            <li><a id="tab-reviews" data-toggle="tab" href="#tab3">Отзывы ({{ product.rating.total_stars_count }})</a></li>
                         </ul>
                         <!-- /product tab nav -->
 
@@ -116,7 +112,7 @@
                                     <div class="col-md-12">
                                         {% for field in details %}
                                         {% getattr product field as detail %}
-                                        <p>{{ detail.verbose_name }}: {{ detail.value}}</p>
+                                        <p>{{ detail.verbose_name }}: {{ detail.value }}</p>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -132,15 +128,11 @@
                                             <div class="rating-avg">
                                                 <span>{{ product.rating.rating }}</span>
                                                 <div class="rating-stars">
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star"></i>
-                                                    <i class="fa fa-star-o"></i>
+                                                    {% show_stars product.rating.rating %}
                                                 </div>
                                             </div>
                                             <ul class="rating">
-                                                <li>
+                                                <li data-stars="5">
                                                     <div class="rating-stars">
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
@@ -149,11 +141,11 @@
                                                         <i class="fa fa-star"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div style="width: 80%;"></div>
+                                                        <div style="width: {% rating_progress_width product.rating.five_star_count product.rating.total_stars_count %}%;"></div>
                                                     </div>
                                                     <span class="sum">{{ product.rating.five_star_count }}</span>
                                                 </li>
-                                                <li>
+                                                <li data-stars="4">
                                                     <div class="rating-stars">
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
@@ -162,11 +154,11 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div style="width: 60%;"></div>
+                                                        <div style="width: {% rating_progress_width product.rating.four_star_count product.rating.total_stars_count %}%;"></div>
                                                     </div>
                                                     <span class="sum">{{ product.rating.four_star_count }}</span>
                                                 </li>
-                                                <li>
+                                                <li data-stars="3">
                                                     <div class="rating-stars">
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
@@ -175,11 +167,11 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div></div>
+                                                        <div style="width: {% rating_progress_width product.rating.three_star_count product.rating.total_stars_count %}%;"></div>
                                                     </div>
                                                     <span class="sum">{{ product.rating.three_star_count }}</span>
                                                 </li>
-                                                <li>
+                                                <li data-stars="2">
                                                     <div class="rating-stars">
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
@@ -188,11 +180,11 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div></div>
+                                                        <div style="width: {% rating_progress_width product.rating.two_star_count product.rating.total_stars_count %}%;"></div>
                                                     </div>
                                                     <span class="sum">{{ product.rating.two_star_count }}</span>
                                                 </li>
-                                                <li>
+                                                <li data-stars="1">
                                                     <div class="rating-stars">
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star-o"></i>
@@ -201,7 +193,7 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div>
                                                     <div class="rating-progress">
-                                                        <div></div>
+                                                        <div style="width: {% rating_progress_width product.rating.one_star_count product.rating.total_stars_count %}%;"></div>
                                                     </div>
                                                     <span class="sum">{{ product.rating.one_star_count }}</span>
                                                 </li>
@@ -212,13 +204,16 @@
 
                                     <!-- Reviews -->
                                     <div class="col-md-6">
-                                        <div id="reviews">
+                                        <div id="reviews" data-product-id="{{ product.pk }}" data-more-url="{% url 'review_more' %}">
                                             <ul class="reviews">
                                                 {% for review in reviews %}
+                                                {% if forloop.last %}
+                                                <li class="earliest-review" data-review-id="{{ review.pk }}">
+                                                {% else %}
                                                 <li>
+                                                {% endif %}
                                                     <div class="review-heading">
                                                         <h5 class="name">{{ review.author }}</h5>
-                                                        <!--<p class="date">27 DEC 2018, 8:0 PM</p>-->
                                                         <p class="date">{{ review.created_at }}</p>
                                                         <div class="review-rating">
                                                             {% for i in 5|times %}
@@ -235,30 +230,12 @@
                                                     </div>
                                                 </li>
                                                 {% endfor %}
-                                                <!--<li>
-                                                    <div class="review-heading">
-                                                        <h5 class="name">John</h5>
-                                                        <p class="date">27 DEC 2018, 8:0 PM</p>
-                                                        <div class="review-rating">
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star"></i>
-                                                            <i class="fa fa-star-o empty"></i>
-                                                        </div>
-                                                    </div>
-                                                    <div class="review-body">
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
-                                                    </div>
-                                                </li>-->
                                             </ul>
-                                            <ul class="reviews-pagination">
-                                                <li class="active">1</li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                                            </ul>
+                                            {% if reviews %}
+                                            <button class="more-reviews-btn">Ещё отзывы</button>
+                                            {% else %}
+                                            <p class="reviews-empty">Отзывов пока нет...</p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <!-- /Reviews -->
@@ -267,9 +244,9 @@
                                     <div class="col-md-3">
                                         <div id="review-form">
                                             <div class="review-form">
-                                                <textarea class="input" placeholder="Your Review"></textarea>
+                                                <textarea class="input" placeholder="Ваш отзыв"></textarea>
                                                 <div class="input-rating">
-                                                    <span>Your Rating: </span>
+                                                    <span>Оценка: </span>
                                                     <div class="stars">
                                                         <input id="star5" name="rating" value="5" type="radio"><label for="star5"></label>
                                                         <input id="star4" name="rating" value="4" type="radio"><label for="star4"></label>
@@ -278,7 +255,7 @@
                                                         <input id="star1" name="rating" value="1" type="radio"><label for="star1"></label>
                                                     </div>
                                                 </div>
-                                                <button class="primary-btn" data-id="{{ product.pk }}" data-create-url="{% url 'review_create' %}">Submit</button>
+                                                <button class="primary-btn" data-id="{{ product.pk }}" data-create-url="{% url 'review_create' %}">Отправить</button>
                                             </div>
                                         </div>
                                     </div>
@@ -315,36 +292,7 @@
                 <div class="also">
                 {% for other_product in other_products %}
                 <div class="col-md-3 col-xs-6">
-                    <div class="product">
-                        <a href="{{ other_product.get_absolute_url }}">
-                        <div class="product-img">
-                            <img src="{{ other_product.photo.url }}">
-                            {% if other_product.discount %}
-                            <div class="product-label">
-                                <span class="sale">-{{ other_product.discount }}%</span>
-                            </div>
-                            {% endif %}
-                        </div>
-                        </a>
-                        <div class="product-body">
-                            <p class="product-category">{{ other_product.subcategory }}</p>
-                            <h3 class="product-name"><a href="{{ other_product.get_absolute_url }}">{{ other_product.name }}</a></h3>
-                            {% if other_product.discounted_price %}
-                            <h4 class="product-price">₴{{ other_product.discounted_price }} <del class="product-old-price">₴{{ other_product.price }}</del></h4>
-                            {% else %}
-                            <h4 class="product-price">₴{{ other_product.price }}</h4>
-                            {% endif %}
-                            <div class="product-rating">
-                            </div>
-                            <div class="product-btns">
-                                <button class="add-to-wishlist" data-id="{{ other_product.pk }}" data-product-url="{{ other_product.get_absolute_url }}"><i class="fa fa-heart-o"></i><span class="tooltipp">добавить в список желаемого</span></button>
-                                <button class="quick-view"><a href="{{ other_product.get_absolute_url }}"><i class="fa fa-eye"></i><span class="tooltipp">посмотреть</span></a></button>
-                            </div>
-                        </div>
-                        <div class="add-to-cart">
-                            <button type="submit" class="add-to-cart-btn" data-id="{{ other_product.pk }}" data-product-url="{{ other_product.get_absolute_url }}"><i class="fa fa-shopping-cart"></i>в корзину</button>
-                        </div>
-                    </div>
+                    {% show_product_block other_product %}
                 </div>
                 {% endfor %}
                 </div>

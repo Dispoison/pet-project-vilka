@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 
 from shop.models.products.product_rating import ProductRating
@@ -27,7 +27,13 @@ class Review(models.Model):
 
 
 @receiver(post_save, sender=Review)
-def update_review_product(sender, instance, created, **kwargs):
+def update_rating_product_on_create(sender, instance, created, **kwargs):
     if created:
         product_rating = ProductRating.objects.get(product_id=instance.object_id)
-        product_rating.update_star_count(instance.rating)
+        product_rating.update_star_count(str(instance.rating), 1)
+
+
+@receiver(pre_delete, sender=Review)
+def update_rating_product_on_delete(sender, instance, **kwargs):
+    product_rating = ProductRating.objects.get(product_id=instance.object_id)
+    product_rating.update_star_count(str(instance.rating), -1)

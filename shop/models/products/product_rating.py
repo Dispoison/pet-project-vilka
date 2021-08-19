@@ -18,7 +18,7 @@ class ProductRating(models.Model):
     def __str__(self):
         return self.product.name
 
-    def update_star_count(self, rating, value=1):
+    def update_star_count(self, rating, value):
         if rating == '1':
             self.one_star_count += value
         elif rating == '2':

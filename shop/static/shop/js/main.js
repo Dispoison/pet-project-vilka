@@ -465,6 +465,38 @@
 		}
 	})
 
+	function changeStarsCount(total_count, stars_counts){
+		let stars_countainer = $('div#rating > ul.rating')
+
+		for (let i = 5; i > 0; --i){
+			stars_countainer.children(`li[data-stars=${i}]`).children('span.sum').text(stars_counts[i])
+			let percent = total_count === 0 ? '0%' : (stars_counts[i] / total_count * 100).toString() + '%'
+			stars_countainer.children(`li[data-stars=${i}]`).children('div.rating-progress').children('div').css('width', percent)
+		}
+	}
+
+	function fillStars(rating){
+		let text = ""
+		let full_stars = parseInt(rating)
+		let remainder = parseFloat(rating) - full_stars
+		let half_star = 0
+		if (0.5 <= remainder){
+			half_star = 1
+		}
+		let empty_stars = 5 - (full_stars + half_star)
+
+		for (let i = 0; i < full_stars; ++i){
+			text += '<i class="fa fa-star"></i>\n'
+		}
+		if (half_star === 1){
+			text += '<i class="fa fa-star-half-full"></i>\n'
+		}
+		for (let i = 0; i < empty_stars; ++i){
+			text += '<i class="fa fa-star-o"></i>\n'
+		}
+		return text
+	}
+
 	function sendReview(btn, text){
 		$.ajax({
 			url: btn.attr('data-create-url'),
@@ -476,7 +508,123 @@
 			},
 			dataType: 'json',
 			success: function (data) {
-				console.log(data)
+				let ul_reviews = $('ul.reviews')
+				let text = "<li>\n" +
+						   "<div class=\"review-heading\">\n" +
+						   `        <h5 class=\"name\">${data['username']}</h5>\n` +
+						   `        <p class=\"date\">${data['created_at']}</p>\n` +
+						   "        <div class=\"review-rating\">\n" +
+										starCalculate(data['rating']) +
+						   "        </div>\n" +
+						   "    </div>\n" +
+						   "    <div class=\"review-body\">\n" +
+						   `        <p>${data['text']}</p>\n` +
+						   "    </div>\n" +
+						 "</li>"
+
+
+				let total_stars_count = data['total_stars_count']
+
+				let reviewLink = $('a.review-link')
+				reviewLink.text(total_stars_count + ' ' + reviewLink.text().split(' ').slice(1).join(' '))
+
+				let tabReviews = $('#tab-reviews')
+				tabReviews.text(tabReviews.text().split(' ')[0] + ` (${total_stars_count})`)
+
+				let ratingStars = $('div#rating div.rating-avg div.rating-stars')
+				ratingStars.empty()
+				ratingStars.append(fillStars(data['product_rating']))
+
+
+				$('div.rating-avg > span').text(data['product_rating'])
+				let stars_counts = {
+					5: data['five_star_count'],
+					4: data['four_star_count'],
+					3: data['three_star_count'],
+					2: data['two_star_count'],
+					1: data['one_star_count'],
+				}
+				changeStarsCount(total_stars_count, stars_counts)
+
+				$('div#reviews p.reviews-empty').remove()
+
+				ul_reviews.prepend(text)
+			},
+			error: function(data) {
+                console.log(`${data['statusText']}(${data['status']}): ${data['responseJSON']['message']}`);
+			}
+		});
+	}
+
+	$('a.review-link').on('click', function (){
+		$('#tab-reviews').trigger('click')
+		$('html,body').animate({scrollTop: $('.tab-nav').offset().top});
+	})
+
+	$('button.more-reviews-btn').on('click', function (){
+		let earlisestReview = $('.earliest-review');
+
+		let url = $(this).parent('div#reviews').attr('data-more-url')
+		let productId = $(this).parent('div#reviews').attr('data-product-id');
+		let earliestReviewId = earlisestReview.attr('data-review-id');
+
+		earlisestReview.removeClass('earliest-review');
+		earlisestReview.removeAttr('data-review-id')
+
+		getMoreReviews(url, productId, earliestReviewId)
+	})
+
+	function starCalculate(rating){
+		let text = ""
+		for (let i = 0; i < 5; ++i){
+			if (i <= rating){
+				text += "<i class=\"fa fa-star\"></i>\n"
+			}
+			else{
+				text += "<i class=\"fa fa-star-o empty\"></i>\n"
+			}
+		}
+		return text
+	}
+
+	function getMoreReviews(url, productId, earliestReviewId){
+		$.ajax({
+			url: url,
+			type: 'GET',
+			data: {
+				'product_id': productId,
+				'earliest_review_id': earliestReviewId,
+			},
+			dataType: 'json',
+			success: function (data) {
+				let ul_reviews = $('ul.reviews')
+				let reviews = data['reviews'];
+
+				for (let i = 0; i < reviews.length; ++i){
+					let text = ""
+
+					if (reviews[i]['earliest-review']) {
+						text += `<li class=\"earliest-review\" data-review-id=\"${reviews[i]['review_id']}\">\n`}
+					else {
+						text += "<li>\n" }
+
+					text +=    "    <div class=\"review-heading\">\n" +
+						       `        <h5 class=\"name\">${reviews[i]['username']}</h5>\n` +
+						       `        <p class=\"date\">${reviews[i]['created_at']}</p>\n` +
+						       "        <div class=\"review-rating\">\n" +
+											starCalculate(reviews[i]['rating']) +
+						       "        </div>\n" +
+						       "    </div>\n" +
+						       "    <div class=\"review-body\">\n" +
+						       `        <p>${reviews[i]['text']}</p>\n` +
+						       "    </div>\n" +
+						       "</li>"
+					ul_reviews.append(text)
+				}
+
+				if (data['nothing_else']){
+					$('button.more-reviews-btn').remove()
+				}
 			},
 			error: function(data) {
                 console.log(`${data['statusText']}(${data['status']}): ${data['responseJSON']['message']}`);

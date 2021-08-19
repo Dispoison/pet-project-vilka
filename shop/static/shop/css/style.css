@@ -980,7 +980,7 @@ textarea.input {
   z-index: 10;
 }
 
-.product .product-body .product-rating>i.fa-star {
+.product .product-body .product-rating>i.fa-star, .product .product-rating>i.fa-star-half-full {
   color: #ef233c;
 }
 
@@ -1514,6 +1514,7 @@ textarea.input {
 
 .product-details .review-link {
   font-size: 12px;
+  cursor: pointer;
 }
 
 .product-details .product-price {
@@ -1719,7 +1720,7 @@ textarea.input {
   color: #D10024;
 }
 
-.rating-avg .rating-stars>i.fa-star-half-full {
+.rating-avg .rating-stars>i.fa-star-half-full, .product-rating>i.fa-star-half-full {
   color: #D10024;
 }
 
@@ -2381,4 +2382,31 @@ textarea.input {
   text-transform: uppercase;
   font-size: 12px;
   cursor: pointer;
+}
+
+.more-reviews-btn {
+  width: 30%;
+  display: block;
+  margin: 0 auto;
+  padding: 12px 30px;
+  background-color: #D10024;
+  border: none;
+  border-radius: 40px;
+  color: #FFF;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+}
+
+.more-reviews-btn:hover, .more-reviews-btn:focus {
+  opacity: 0.9;
+  color: #FFF;
+}
+
+.reviews-empty {
+  display: block;
+  text-align: center;
+  font-weight: 500;
+  color: #8D99AE;
 }

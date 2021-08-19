@@ -1,0 +1,13 @@
+{% load shop_tags %}
+
+{% for f in full_stars|times %}
+<i class="fa fa-star"></i>
+{% endfor %}
+
+{% if half_star %}
+<i class="fa fa-star-half-full"></i>
+{% endif %}
+
+{% for e in empty_stars|times %}
+<i class="fa fa-star-o"></i>
+{% endfor %}
