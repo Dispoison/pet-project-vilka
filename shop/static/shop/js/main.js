@@ -576,7 +576,7 @@
 
 	function starCalculate(rating){
 		let text = ""
-		for (let i = 0; i < 5; ++i){
+		for (let i = 1; i <= 5; ++i){
 			if (i <= rating){
 				text += "<i class=\"fa fa-star\"></i>\n"
 			}
