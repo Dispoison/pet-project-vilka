@@ -622,7 +622,7 @@
 					ul_reviews.append(text)
 				}
 
-				if (data['nothing_else']){
+				if (!data['is_more_reviews']){
 					$('button.more-reviews-btn').remove()
 				}
 			},

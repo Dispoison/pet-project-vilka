@@ -231,9 +231,10 @@
                                                 </li>
                                                 {% endfor %}
                                             </ul>
-                                            {% if reviews %}
+                                            {% if is_more_reviews %}
                                             <button class="more-reviews-btn">Ещё отзывы</button>
-                                            {% else %}
+                                            {% endif %}
+                                            {% if not reviews %}
                                             <p class="reviews-empty">Отзывов пока нет...</p>
                                             {% endif %}
                                         </div>

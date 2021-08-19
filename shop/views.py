@@ -105,6 +105,7 @@ class ProductView(ViewDataMixin, DetailView):
         base_context = super().get_context_data(**kwargs)
 
         from collections import namedtuple
+        shown_size = 3
         Field = namedtuple('Field', 'name verbose_name')
         product_parent_fields_number = len(Product._meta.concrete_fields)
         product = self.get_object()
@@ -113,12 +114,19 @@ class ProductView(ViewDataMixin, DetailView):
         short_description = product.description.split('.')[0]
         other_products = product.__class__.objects.exclude(pk=product.pk).select_related('subcategory')[:4]
         set_discount(other_products)
-        reviews = Review.objects.filter(object_id=product.pk)[:3]
+        reviews = Review.objects.filter(object_id=product.pk)[:shown_size+1]
+
+        is_more_reviews = True
+        if len(reviews) < 4:
+            is_more_reviews = False
+
+        reviews = reviews[:3]
 
         mixin_context = self.get_mixin_context(details=details,
                                                short_description=short_description,
                                                other_products=other_products,
-                                               reviews=reviews)
+                                               reviews=reviews,
+                                               is_more_reviews=is_more_reviews)
         return base_context | mixin_context
 
     def get_object(self, queryset=None):
@@ -332,7 +340,9 @@ class MoreReviewsView(View):
             return JsonResponse(data=data, status=400)
 
         if len(review_objects) < 4:
-            data.update({'nothing_else': True})
+            data.update({'is_more_reviews': False})
+        else:
+            data.update({'is_more_reviews': True})
 
         reviews = []
 
