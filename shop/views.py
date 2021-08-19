@@ -106,21 +106,23 @@ class ProductView(ViewDataMixin, DetailView):
 
         from collections import namedtuple
         shown_size = 3
+        other_product_shown_count = 4
         Field = namedtuple('Field', 'name verbose_name')
         product_parent_fields_number = len(Product._meta.concrete_fields)
         product = self.get_object()
         details = [Field(field.name, field.verbose_name)
                    for field in product._meta.fields][product_parent_fields_number + 1:]
         short_description = product.description.split('.')[0]
-        other_products = product.__class__.objects.exclude(pk=product.pk).select_related('subcategory')[:4]
+        other_products = product.__class__.objects.exclude(pk=product.pk). \
+                             select_related('subcategory')[:other_product_shown_count]
         set_discount(other_products)
-        reviews = Review.objects.filter(object_id=product.pk)[:shown_size+1]
+        reviews = Review.objects.filter(object_id=product.pk)[:shown_size + 1]
 
         is_more_reviews = True
-        if len(reviews) < 4:
+        if len(reviews) < shown_size + 1:
             is_more_reviews = False
 
-        reviews = reviews[:3]
+        reviews = reviews[:shown_size]
 
         mixin_context = self.get_mixin_context(details=details,
                                                short_description=short_description,
@@ -310,7 +312,7 @@ class CreateReviewView(View):
         product_rating = ProductRating.objects.get(product_id=review.object_id)
 
         data = {'username': customer.user.username,
-                'created_at': format_datetime(review.created_at, 'dd MMMM yyyy г. hh:mm', locale='ru'),
+                'created_at': format_datetime(review.created_at, 'dd MMMM yyyy г. HH:mm', locale='ru'),
                 'rating': review.rating,
                 'text': text,
                 'product_rating': product.rating.rating,
@@ -339,7 +341,7 @@ class MoreReviewsView(View):
             data.update({'message': 'Больше нет отзывов'})
             return JsonResponse(data=data, status=400)
 
-        if len(review_objects) < 4:
+        if len(review_objects) < shown_size + 1:
             data.update({'is_more_reviews': False})
         else:
             data.update({'is_more_reviews': True})
@@ -348,7 +350,7 @@ class MoreReviewsView(View):
 
         for i, review in enumerate(review_objects[:shown_size]):
             review_data = {'username': review.author.user.username,
-                           'created_at': format_datetime(review.created_at, 'dd MMMM yyyy г. hh:mm', locale='ru'),
+                           'created_at': format_datetime(review.created_at, 'dd MMMM yyyy г. HH:mm', locale='ru'),
                            'rating': review.rating,
                            'text': review.text}
 
