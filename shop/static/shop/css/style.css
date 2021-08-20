@@ -2410,3 +2410,7 @@ textarea.input {
   font-weight: 500;
   color: #8D99AE;
 }
+
+.footer p a {
+  color: #8c3232;
+}
